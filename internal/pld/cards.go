@@ -26,14 +26,18 @@ func (cli *Client) AddCards(cards ...Cards) {
 }
 
 func (cli *Client) AddCard(number string, title string, progress int, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee string) {
+	cli.SetDrawColor(0, 0, 0)
+	cli.SetTextColor(0, 0, 0)
+
 	//style
 	div := 100 / (len(cli.PercentColors) - 1)
 	color := cli.PercentColors[progress/div]
+	tr := cli.Pdf.UnicodeTranslatorFromDescriptor("")
 
 	//row_1
 	cli.SetFillColor(color.R, color.G, color.B)
 	cli.Pdf.SetX((cli.Width - 3*50) / 2)
-	for _, str := range []string{number + " " + title, "Progres", strconv.Itoa(progress) + " %"} {
+	for _, str := range []string{number + " " + tr(title), "Progres", strconv.Itoa(progress) + " %"} {
 		cli.Pdf.CellFormat(50, 10, str, "1", 0, "", true, 0, "")
 	}
 	cli.Pdf.Ln(-1)
@@ -56,7 +60,7 @@ func (cli *Client) AddCard(number string, title string, progress int, asWho stri
 	//display lines
 	cli.SetFillColor(255, 255, 255)
 	cli.SetX((cli.Width - 75*2) / 2)
-	for i, str := range []string{asWho, iWant} {
+	for i, str := range []string{tr(asWho), tr(iWant)} {
 		x := cli.GetX()
 		y := cli.GetY()
 		cli.MultiCell(75, 5, str, "1", "", true)
@@ -66,27 +70,29 @@ func (cli *Client) AddCard(number string, title string, progress int, asWho stri
 	}
 
 	//row_4-7
-	for i, str := range []string{"Description", description, "Definition of done", definitionOfDone} {
+	for i, str := range []string{"Description", tr(description), "Definition of done", tr(definitionOfDone)} {
 		cli.Pdf.SetX((cli.Width - 150) / 2)
+		cli.SetFillColor(color.R, color.G, color.B)
 		if i%2 == 0 {
-			cli.SetFillColor(color.R, color.G, color.B)
 			//cli.Pdf.CellFormat(150, 5, str, "1", 0, "", true, 0, "")
 			cli.Pdf.MultiCell(150, 5, str, "1", "", true)
 		} else {
-			cli.SetFillColor(255, 255, 255)
-			cli.MultiCell(150, 5, str+"\n ", "1", "", true)
+			cli.MultiCell(150, 5, str+"\n ", "1", "", false)
 		}
 	}
 
 	//row_8
-	cli.SetFillColor(color.R, color.G, color.B)
 	cli.Pdf.SetX((cli.Width - 75*2) / 2)
-	for i, str := range []string{"Charge Estimée (J/H) :", strconv.FormatFloat(jh, 'f', -1, 64), "Assignés (J/H) :", assignee} {
+	for i, str := range []string{tr("Charge Estimée (J/H) :"), strconv.FormatFloat(jh, 'f', -1, 64), tr("Assignés (J/H) :"), tr(assignee)} {
+		if i%2 == 0 {
+			cli.SetFillColor(color.R, color.G, color.B)
+		} else {
+			cli.SetFillColor(255, 255, 255)
+		}
 		if i < 1 || i > 2 {
 			cli.CellFormat(50, 5, str, "1", 0, "", true, 0, "")
 		} else {
 			cli.CellFormat(25, 5, str, "1", 0, "", true, 0, "")
-
 		}
 	}
 	cli.Pdf.Ln(-1)

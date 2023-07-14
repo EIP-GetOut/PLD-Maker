@@ -14,6 +14,7 @@ type Client struct {
 	Pdf           *fpdf.Fpdf
 	Width         float64
 	PercentColors []Color
+	Tr            func(string) string
 }
 
 func NewClient() (*Client, error) {
@@ -22,7 +23,10 @@ func NewClient() (*Client, error) {
 	//if err := json.Unmarshal(conf, &cli); err != nil { return nil, err }
 	cli.Pdf = fpdf.New("P", "mm", "A4", "")
 	cli.Width = 210.0
+	cli.Tr = cli.Pdf.UnicodeTranslatorFromDescriptor("")
+
 	//cli.Left = (cli.Width - 4*40) / 2
-	cli.PercentColors = []Color{{255, 76, 66}, {255, 176, 97}, {122, 255, 160}}
+	cli.PercentColors = []Color{{234, 153, 153}, {255, 229, 153}, {182, 215, 168}}
+	//	a4c2f4	blue
 	return &cli, nil
 }

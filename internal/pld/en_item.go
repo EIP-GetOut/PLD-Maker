@@ -11,3 +11,7 @@ func (cli *Client) CellFormat(w, h float64, txtStr, borderStr string, ln int, al
 func (cli *Client) MultiCell(w, h float64, txtStr, borderStr, alignStr string, fill bool) {
 	cli.Pdf.MultiCell(w, h, txtStr, borderStr, alignStr, fill)
 }
+
+func (cli *Client) Ln(h float64) {
+	cli.Pdf.Ln(h)
+}

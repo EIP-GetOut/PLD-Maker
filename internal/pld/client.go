@@ -15,9 +15,8 @@ type Client struct {
 	Width         float64
 	Height        float64
 	HeaderWidth   float64
+	CardWith      float64
 	PercentColors []Color
-	Tr            func(string) string
-	Page          int
 }
 
 func NewClient() (*Client, error) {
@@ -27,7 +26,7 @@ func NewClient() (*Client, error) {
 	cli.Pdf = fpdf.New("P", "mm", "A4", "")
 	cli.Width, cli.Height = cli.Pdf.GetPageSize()
 	cli.HeaderWidth = 190
-	cli.Tr = cli.Pdf.UnicodeTranslatorFromDescriptor("")
+	cli.CardWith = 180
 
 	//cli.Left = (cli.Width - 4*40) / 2
 	cli.PercentColors = []Color{{234, 153, 153}, {255, 229, 153}, {182, 215, 168}}

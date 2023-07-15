@@ -1,6 +1,8 @@
 package pld
 
-import "strconv"
+import (
+	"strconv"
+)
 
 func (cli *Client) SetHeader(left, center, right string) {
 	fn := func() {
@@ -22,7 +24,7 @@ func (cli *Client) SetHeader(left, center, right string) {
 	cli.SetHeaderFunc(fn)
 }
 
-func (cli *Client) SetFooter(left, center, right string, pageNumber bool) {
+func (cli *Client) SetFooter(left, center, right string, pageNo bool, firstPageNo bool) {
 	fn := func() {
 		cli.Pdf.SetXY((cli.Width-cli.HeaderWidth)/2, cli.Height-10)
 		cli.SetFont("Arial", "B", 12)
@@ -32,15 +34,13 @@ func (cli *Client) SetFooter(left, center, right string, pageNumber bool) {
 		cli.Pdf.CellFormat(cli.HeaderWidth/3, 1, left, "", 0, "LM", true, 0, "")
 		cli.SetDrawColor(0, 0, 0)
 		cli.Pdf.CellFormat(cli.HeaderWidth/3, 1, center, "", 0, "CM", true, 0, "")
-		cli.SetDrawColor(0, 0, 0)
-		//		tmp := cli.GetX()
-		if pageNumber {
+		if pageNo && (cli.Pdf.PageNo() != 1 || firstPageNo) {
+			cli.SetDrawColor(0, 0, 0)
 			cli.Pdf.CellFormat(cli.HeaderWidth/3, 1, strconv.Itoa(cli.Pdf.PageNo()), "", 0, "RM", true, 0, "")
 		} else {
+			cli.SetDrawColor(0, 0, 0)
 			cli.Pdf.CellFormat(cli.HeaderWidth/3, 1, right, "", 0, "RM", true, 0, "")
 		}
-		//cli.SetX(tmp)
-
 	}
 	cli.Pdf.SetFooterFunc(fn)
 }

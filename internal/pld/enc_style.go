@@ -89,3 +89,7 @@ func (cli *Client) SetY(y float64) {
 func (cli *Client) SetXY(x, y float64) {
 	cli.Pdf.SetXY(x, y)
 }
+
+func (cli *Client) PageNo() int {
+	return cli.Pdf.PageNo()
+}

@@ -1,0 +1,108 @@
+package airtable
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"pld-maker/internal/tools"
+)
+
+type Assignee struct {
+	Id    string `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
+
+type CardFields struct {
+	Title            string     `json:"Name"`
+	Status           string     `json:"Status"`
+	Progress         float64    `json:"progress"`
+	AsWho            string     `json:"En tant que"`
+	IWant            string     `json:"Je veux"`
+	DefinitionOfDone string     `json:"Definition Of Done"`
+	Description      string     `json:"Description"`
+	Jh               float64    `json:"JH"`
+	Assignee         []Assignee `json:"Assignees"`
+	OrderedJH        string     `json:"Ordered JH"`
+	Weight           int        `json:"pldWeight"`
+
+	Category []string `json:"Category"`
+	Sprint   []string `json:"Sprint"`
+	Secteur  string   `json:"Secteur"`
+}
+
+type Card struct {
+	Id          string     `json:"id"`
+	CreatedTime string     `json:"createdTime"`
+	Fields      CardFields `json:"fields"`
+}
+
+type Cards struct {
+	Cards []Card `json:"records"`
+}
+
+func (cli *Client) ListCards(params *url.Values) (Cards, error) {
+	var cards Cards
+	var parameters string
+	//Request
+	if params != nil {
+		parameters = "?" + (*params).Encode()
+	}
+	header := url.Values{}
+	header.Add("Authorization", "Bearer "+cli.Token)
+	fmt.Println(cli.APIpath + "/Card" + parameters)
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Card"+parameters, header))
+	//Json to Struct
+	if err := json.Unmarshal(data, &cards); err != nil {
+		return cards, err
+	}
+	return cards, nil
+}
+
+func (cli *Client) GetCard(id string) (Card, error) {
+	var card Card
+	//Request
+	header := url.Values{}
+	header.Add("Authorization", "Bearer "+cli.Token)
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Cards/"+id, header))
+
+	//Json to Struct
+	if err := json.Unmarshal(data, &card); err != nil {
+		return card, err
+	}
+	return card, nil
+}
+
+func (cli *Client) PrintCards(cards []Card, indent string) {
+	fmt.Println(indent + "{")
+
+	fmt.Println(indent + "  records: [")
+	for _, card := range cards {
+		cli.PrintCard(card, indent+"    ")
+	}
+	fmt.Println(indent + "  ]")
+	fmt.Println(indent + "}")
+}
+
+func (cli *Client) PrintCard(card Card, indent string) {
+	fields := card.Fields
+
+	fmt.Println(indent+"{", "")
+	fmt.Println(indent+"  "+"id: ", card.Id)
+	fmt.Println(indent+"  "+"createdTime: ", card.CreatedTime)
+	fmt.Println(indent+"  "+"Fields: {", "")
+	fmt.Println(indent+"    "+"title: ", fields.Title)
+	fmt.Println(indent+"    "+"progress: ", fields.Progress)
+	fmt.Println(indent+"    "+"AsWho: ", fields.AsWho)
+	fmt.Println(indent+"    "+"IWant: ", fields.IWant)
+	fmt.Println(indent+"    "+"Description: ", fields.Description)
+	fmt.Println(indent+"    "+"DefinitionOfDone: ", fields.DefinitionOfDone)
+	fmt.Println(indent+"    "+"Jh: ", fields.Jh)
+	fmt.Println(indent+"    "+"Assignee: ", fields.Assignee)
+	fmt.Println(indent+"    "+"OrderedJH: ", fields.OrderedJH)
+	fmt.Println(indent+"    "+"Category: ", fields.Category)
+	fmt.Println(indent+"    "+"Secteur: ", fields.Secteur)
+	fmt.Println(indent+"    "+"Sprint: ", fields.Sprint)
+	fmt.Println(indent+"  "+"}", "")
+	fmt.Println(indent+"}", "")
+}

@@ -74,8 +74,8 @@ func (cli *Client) GetCard(id string) (Card, error) {
 }
 
 func (cli *Client) PrintCards(cards []Card, indent string) {
+	fmt.Println("cards:")
 	fmt.Println(indent + "{")
-
 	fmt.Println(indent + "  records: [")
 	for _, card := range cards {
 		cli.PrintCard(card, indent+"    ")

@@ -54,6 +54,7 @@ func (cli *Client) GetCategory(id string) (Category, error) {
 }
 
 func (cli *Client) PrintCategories(categories []Category, indent string) {
+	fmt.Println("categories:")
 	fmt.Println(indent + "{")
 
 	fmt.Println(indent + "  records: [")

@@ -55,8 +55,8 @@ func (cli *Client) GetSprint(id string) (Sprint, error) {
 }
 
 func (cli *Client) PrintSprints(sprints []Sprint, indent string) {
+	fmt.Println("sprints:")
 	fmt.Println(indent + "{")
-
 	fmt.Println(indent + "  records: [")
 	for _, sprint := range sprints {
 		cli.PrintSprint(sprint, indent+"    ")
@@ -68,6 +68,7 @@ func (cli *Client) PrintSprints(sprints []Sprint, indent string) {
 func (cli *Client) PrintSprint(sprint Sprint, indent string) {
 	fields := sprint.Fields
 
+	fmt.Println("sprint:")
 	fmt.Println(indent+"{", "")
 	fmt.Println(indent+"  "+"id: ", sprint.Id)
 	fmt.Println(indent+"  "+"createdTime: ", sprint.CreatedTime)

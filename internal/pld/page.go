@@ -15,3 +15,7 @@ func (cli *Client) LinkToPagePosition(y float64, page int) int {
 	cli.Pdf.SetLink(link, y, page)
 	return link
 }
+
+func (cli *Client) Ln(h float64) {
+	cli.Pdf.Ln(h)
+}

@@ -16,6 +16,7 @@ type Client struct {
 	Height        float64
 	HeaderWidth   float64
 	CardWith      float64
+	TitleWith     float64
 	PercentColors []Color
 }
 
@@ -27,6 +28,7 @@ func NewClient() (*Client, error) {
 	cli.Width, cli.Height = cli.Pdf.GetPageSize()
 	cli.HeaderWidth = 190
 	cli.CardWith = 180
+	cli.TitleWith = 180
 
 	//cli.Left = (cli.Width - 4*40) / 2
 	cli.PercentColors = []Color{{234, 153, 153}, {255, 229, 153}, {182, 215, 168}}

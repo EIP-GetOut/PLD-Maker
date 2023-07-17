@@ -33,8 +33,8 @@ func (cli *Client) AddCards(cards ...Card) {
 // setX as beginingX
 // Add Page
 func (cli *Client) AddCard(number string, title string, progress int, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string) {
-	cli.SetDrawColor(0, 0, 0)
-	cli.SetTextColor(0, 0, 0)
+	cli.Pdf.SetDrawColor(0, 0, 0)
+	cli.Pdf.SetTextColor(0, 0, 0)
 	cli.Pdf.SetFontSize(8)
 	//style
 
@@ -43,20 +43,19 @@ func (cli *Client) AddCard(number string, title string, progress int, asWho stri
 
 	//rows
 	if cli.Pdf.GetY() > cli.Height-50 {
-		cli.AddPage()
+		cli.Pdf.AddPage()
 	}
 	cli.addCardsRow1(color, number, title, progress)
 	cli.addCardsRow2(color)
 	if cli.Pdf.GetY() > cli.Height-50 {
-		cli.AddPage()
+		cli.Pdf.AddPage()
 	}
 	cli.addCardsRow3(color, asWho, iWant)
 	cli.addCardsRow4_7(color, description, definitionOfDone)
 	if cli.Pdf.GetY() > cli.Height-50 {
-		cli.AddPage()
+		cli.Pdf.AddPage()
 	}
 	cli.addCardsRow8(color, jh, assignee)
-	cli.SetDrawColor(255, 255, 255)
 	//end
 	cli.Pdf.Ln(5)
 }
@@ -70,13 +69,13 @@ func (cli *Client) addCardsRow1(color Color, number, title string, progress int)
 	Progress := "Progres" + strings.Repeat("\n ", diffLen)
 	ProgressValue := strconv.Itoa(progress) + " %" + strings.Repeat("\n ", diffLen)
 	//display
-	cli.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	for i, str := range []string{number + " " + tr(WrapedTitle), Progress, ProgressValue} {
 		x, y := cli.Pdf.GetXY()
-		cli.SetFillColor(color.R, color.G, color.B)
+		cli.Pdf.SetFillColor(color.R, color.G, color.B)
 		cli.Pdf.MultiCell(cli.CardWith/3, 5, str, "1", "", true)
 		if i < 2 {
-			cli.SetXY(x+(cli.CardWith/3), y)
+			cli.Pdf.SetXY(x+(cli.CardWith/3), y)
 		}
 	}
 }
@@ -84,10 +83,10 @@ func (cli *Client) addCardsRow1(color Color, number, title string, progress int)
 func (cli *Client) addCardsRow2(color Color) {
 	//tr := cli.UnicodeTranslatorFromDescriptor("")
 
-	cli.SetFillColor(color.R, color.G, color.B)
-	cli.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.SetFillColor(color.R, color.G, color.B)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	for _, str := range []string{"en tant que:", "je veux:"} {
-		cli.CellFormat(cli.CardWith/2, 5, str, "1", 0, "", true, 0, "")
+		cli.Pdf.CellFormat(cli.CardWith/2, 5, str, "1", 0, "", true, 0, "")
 	}
 	cli.Pdf.Ln(-1)
 
@@ -107,14 +106,14 @@ func (cli *Client) addCardsRow3(color Color, asWho, iWant string) {
 		WrapedIWant += strings.Repeat("\n ", diffLen)
 	}
 	//display lines
-	cli.SetFillColor(255, 255, 255)
-	cli.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.SetFillColor(255, 255, 255)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	for i, str := range []string{tr(WrapedAsWho), tr(WrapedIWant)} {
-		x := cli.GetX()
-		y := cli.GetY()
-		cli.MultiCell(cli.CardWith/2, 5, str, "1", "", true)
+		x := cli.Pdf.GetX()
+		y := cli.Pdf.GetY()
+		cli.Pdf.MultiCell(cli.CardWith/2, 5, str, "1", "", true)
 		if i < 1 {
-			cli.SetXY(x+(cli.CardWith/2), y)
+			cli.Pdf.SetXY(x+(cli.CardWith/2), y)
 		}
 	}
 
@@ -125,12 +124,12 @@ func (cli *Client) addCardsRow4_7(color Color, description, definitionOfDone str
 
 	for i, str := range []string{"Description", tr(description), "Definition of done", tr(definitionOfDone)} {
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-		cli.SetFillColor(color.R, color.G, color.B)
+		cli.Pdf.SetFillColor(color.R, color.G, color.B)
 		if i%2 == 0 {
 			//cli.Pdf.CellFormat(150, 5, str, "1", 0, "", true, 0, "")
 			cli.Pdf.MultiCell(cli.CardWith, 5, str, "1", "", true)
 		} else {
-			cli.MultiCell(cli.CardWith, 5, str+"\n ", "1", "", false)
+			cli.Pdf.MultiCell(cli.CardWith, 5, str+"\n ", "1", "", false)
 		}
 	}
 }
@@ -145,20 +144,20 @@ func (cli *Client) addCardsRow8(color Color, jh float64, assignee []string) {
 
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	for i, str := range []string{tr(JH), JHValue, tr(Assignee), tr(WrapedAssignee)} {
-		x := cli.GetX()
-		y := cli.GetY()
-		pageNo := cli.PageNo()
+		x := cli.Pdf.GetX()        //remove partially a bug
+		y := cli.Pdf.GetY()        //remove partially a bug
+		pageNo := cli.Pdf.PageNo() //remove partially a bug
 
 		if i%2 == 0 {
-			cli.SetFillColor(color.R, color.G, color.B)
+			cli.Pdf.SetFillColor(color.R, color.G, color.B)
 		} else {
-			cli.SetFillColor(255, 255, 255)
+			cli.Pdf.SetFillColor(255, 255, 255)
 		}
 		w := tools.Ternary(i < 1 || i > 2, cli.CardWith/3, cli.CardWith/6)
-		cli.Pdf.SetPage(pageNo)
-		cli.MultiCell(w, 5, str, "1", "", true)
+		cli.Pdf.SetPage(pageNo) //remove partially a bug
+		cli.Pdf.MultiCell(w, 5, str, "1", "", true)
 		if i < 3 {
-			cli.SetXY(x+w, y)
+			cli.Pdf.SetXY(x+w, y) //remove partially a bug
 		}
 	}
 	cli.Pdf.Ln(-1)

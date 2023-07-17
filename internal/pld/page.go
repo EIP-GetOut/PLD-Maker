@@ -1,5 +1,9 @@
 package pld
 
+func (cli *Client) AddPage() {
+	cli.Pdf.AddPage()
+}
+
 func (cli *Client) LinkToPage(page int) int {
 	link := cli.Pdf.AddLink()
 	cli.Pdf.SetLink(link, 0, link)

@@ -26,5 +26,5 @@ func (cli *Client) AddImage(filepath string, y float64, w float64, h float64) {
 	_ = cli.Pdf.RegisterImageOptionsReader("logo", opt, fl)
 	fl.Close()
 	cli.Pdf.ImageOptions("logo", (cli.Width-w)/2, y, w, h, false, opt, 0, "")
-
+	cli.Pdf.SetY(y + h)
 }

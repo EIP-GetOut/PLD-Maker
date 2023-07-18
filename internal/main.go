@@ -40,12 +40,12 @@ func main() {
 		//airtableCli.PrintCards(cards[secteur].Cards, "")
 	}
 	for i, secteur := range []string{"Backend", "Frontend", "Devops"} {
-		fmt.Printf("%d %s\n", i, secteur)
+		fmt.Printf("%d %s\n", i + 1, secteur)
 		for j, category := range categories[secteur].Categories {
-			fmt.Printf("%d.%d %s\n", i, j, category.Fields.Name)
+			fmt.Printf("%d.%d %s\n", i + 1, j + 1, category.Fields.Name)
 			for k, card := range cards[secteur].Cards {
 				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {
-					fmt.Printf("%d.%d.%d %s\n", i, j, k, card.Fields.Title)
+					fmt.Printf("%d.%d.%d %s\n", i + 1, j + 1, k + 1, card.Fields.Title)
 				}
 			}
 		}

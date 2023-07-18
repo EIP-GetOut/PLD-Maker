@@ -1,5 +1,11 @@
 package pld
 
+import (
+	"fmt"
+	"pld-maker/internal/tools"
+	"strings"
+)
+
 type Version struct {
 	Date     string
 	Version  string
@@ -55,6 +61,30 @@ func (cli *Client) addVersionHeader() {
 func (cli *Client) addVersionRow(date, version, author, sections, comments string) {
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 
+	// WrapText
+	author = WrapText(author, 30)
+	sections = WrapText(sections, 30)
+	comments = WrapText(comments, 30)
+
+	// Diff
+	authorCount := strings.Count(author, "\n")
+	sectionsCount := strings.Count(sections, "\n")
+	commentsCount := strings.Count(comments, "\n")
+	maxCount := tools.Max(authorCount, sectionsCount, commentsCount)
+	fmt.Println(authorCount, sectionsCount, commentsCount, maxCount)
+	// Calcul
+	date += strings.Repeat("\n ", maxCount)
+	version += strings.Repeat("\n ", maxCount)
+	if authorCount < maxCount {
+		author += strings.Repeat("\n ", maxCount-authorCount)
+	}
+	if sectionsCount < maxCount {
+		sections += strings.Repeat("\n ", maxCount-sectionsCount)
+	}
+	if commentsCount < maxCount {
+		comments += strings.Repeat("\n ", maxCount-commentsCount)
+	}
+	//
 	cli.Pdf.SetDrawColor(255, 255, 255)
 	cli.Pdf.SetFillColor(164, 194, 244)
 	cli.Pdf.SetTextColor(0, 0, 0)

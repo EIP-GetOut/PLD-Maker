@@ -13,7 +13,7 @@ import (
 func main() {
 	credential := tools.Must(os.ReadFile("./conf/credential.json"))
 	airtableCli := tools.Must(airtable.NewClient(credential))
-	fmt.Println(airtableCli.Token)
+	//fmt.Println(airtableCli.Token)
 
 	//Request Sprint
 	paramSprints := url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}}
@@ -28,22 +28,19 @@ func main() {
 	//Request Sector
 	paramSectors := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Name"}, "sort[0][direction]": {"asc"}}
 	sectors := tools.Must(airtableCli.ListSectors(paramSectors))
-	airtableCli.PrintSectors(sectors.Sectors, "")
+	//airtableCli.PrintSectors(sectors.Sectors, "")
 	var categories = make(map[string]airtable.Categories)
 	var cards = make(map[string]airtable.Cards)
 	for _, sector := range sectors.Sectors {
 		//Request Categories
-		fmt.Println("test", sector.Fields.Name)
 		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
 		categories[sector.Fields.Name] = tools.Must(airtableCli.ListCategories(paramCategories))
-		//airtableCli.PrintCategories(categories[secteur].Categories, "")
+		//		airtableCli.PrintCategories(categories[sector.Fields.Name].Categories, "%")
 
 		//Request Cards
 		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
-		cards[sector.Fields.Name] = tools.Must(airtableCli.ListCards(&paramCards))
-		fmt.Println(cards[sector.Fields.Name])
-		//airtableCli.PrintCards(cards[secteur].Cards, "")
-		airtableCli.PrintCards(cards[sector.Fields.Name].Cards, "")
+		cards[sector.Fields.Name] = tools.Must(airtableCli.ListCards(paramCards))
+		//		airtableCli.PrintCards(cards[sector.Fields.Name].Cards, "*")
 	}
 	PrintTable(sectors, categories, cards)
 
@@ -65,7 +62,7 @@ func main() {
 	cli.AddPage()
 	cli.AddCard("1.1.4", "Test OF Size Page", 49, "Business", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"alexandre"})
 	cli.AddPage()
-	cli.AddCard("2.2.5", "Info", 100, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"})
+	cli.AddCard("2.2.5", "Info", 0, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"})
 
 	err := cli.OutputFileAndClose("hello.pdf")
 	fmt.Println("error: ", err)
@@ -73,8 +70,14 @@ func main() {
 
 func PrintTable(sectors airtable.Sectors, categories map[string]airtable.Categories, cards map[string]airtable.Cards) {
 	for i, sector := range sectors.Sectors {
+		if len(categories[sector.Fields.Name].Categories) == 0 {
+			continue //no categories linked to sector
+		}
 		fmt.Printf("%d %s\n", i+1, sector.Fields.Name)
 		for j, category := range categories[sector.Fields.Name].Categories {
+			if len(cards[sector.Fields.Name].Cards) == 0 {
+				continue // no card linked to sector and then to categories
+			}
 			fmt.Printf("%d.%d %s\n", i+1, j+1, category.Fields.Name)
 			for k, card := range cards[sector.Fields.Name].Cards {
 				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {

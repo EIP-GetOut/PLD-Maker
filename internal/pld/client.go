@@ -31,7 +31,7 @@ func NewClient() (*Client, error) {
 	cli.TitleWith = 180
 
 	//cli.Left = (cli.Width - 4*40) / 2
-	cli.PercentColors = []Color{{234, 153, 153}, {255, 229, 153}, {182, 215, 168}}
+	cli.PercentColors = []Color{{234, 153, 153}, {255, 229, 153}, {182, 215, 168}, {200, 200, 200}}
 	//	a4c2f4	blue
 	return &cli, nil
 }

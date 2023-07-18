@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"pld-maker/internal/tools"
+	"time"
 )
 
 type Assignee struct {
@@ -38,23 +39,31 @@ type Card struct {
 }
 
 type Cards struct {
-	Cards []Card `json:"records"`
+	Cards  []Card `json:"records"`
+	Offset string `json:"offset"`
 }
 
-func (cli *Client) ListCards(params *url.Values) (Cards, error) {
+func (cli *Client) ListCards(params url.Values) (Cards, error) {
 	var cards Cards
-	var parameters string
 	//Request
-	if params != nil {
-		parameters = "?" + (*params).Encode()
-	}
-	header := url.Values{}
-	header.Add("Authorization", "Bearer "+cli.Token)
-	fmt.Println(cli.APIpath + "/Card" + parameters)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Card"+parameters, header))
+	header := url.Values{"Authorization": {"Bearer " + cli.Token}}
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Card?"+params.Encode(), header))
 	//Json to Struct
-	if err := json.Unmarshal(data, &cards); err != nil {
-		return cards, err
+	var tmp Cards
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return tmp, err
+	}
+	cards.Cards = append(cards.Cards, tmp.Cards...)
+	for tmp.Offset != "" {
+		params.Add("offset", tmp.Offset)
+		time.Sleep(500 * time.Millisecond)
+		data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Card?"+params.Encode(), header))
+
+		if err := json.Unmarshal(data, &tmp); err != nil {
+			return tmp, err
+		}
+		tmp.Offset = ""
+		cards.Cards = append(cards.Cards, tmp.Cards...)
 	}
 	return cards, nil
 }

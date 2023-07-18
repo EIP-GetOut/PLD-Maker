@@ -38,15 +38,11 @@ func (cli *Client) ListSectors(params url.Values) (Sectors, error) {
 		params.Add("offset", tmp.Offset)
 		time.Sleep(500 * time.Millisecond)
 		data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sector?"+params.Encode(), header))
-		//Json to Struct
 		if err := json.Unmarshal(data, &tmp); err != nil {
 			return tmp, err
 		}
 		tmp.Offset = ""
 		sectors.Sectors = append(sectors.Sectors, tmp.Sectors...)
-	}
-	for i, item := range sectors.Sectors {
-		fmt.Println(i, item.Fields.Name)
 	}
 	return sectors, nil
 }

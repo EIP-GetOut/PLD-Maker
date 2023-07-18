@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"pld-maker/internal/tools"
+	"time"
 )
 
 type SprintFields struct {
@@ -22,20 +23,29 @@ type Sprint struct {
 
 type Sprints struct {
 	Sprints []Sprint `json:"records"`
+	Offset  string   `json:"offset"`
 }
 
 func (cli *Client) ListSprints(params url.Values) (Sprints, error) {
 	var sprints Sprints
-
-	//	if params != nil {
-	//		parameters = "?" + (*params).Encode()
-	//	}
-	header := url.Values{}
-	header.Add("Authorization", "Bearer "+cli.Token)
+	//Request
+	header := url.Values{"Authorization": {"Bearer " + cli.Token}}
 	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint?"+params.Encode(), header))
 	//Json to Struct
-	if err := json.Unmarshal(data, &sprints); err != nil {
-		return sprints, err
+	var tmp Sprints
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return tmp, err
+	}
+	sprints.Sprints = append(sprints.Sprints, tmp.Sprints...)
+	for tmp.Offset != "" {
+		params.Add("offset", tmp.Offset)
+		time.Sleep(500 * time.Millisecond)
+		data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint?"+params.Encode(), header))
+		if err := json.Unmarshal(data, &tmp); err != nil {
+			return tmp, err
+		}
+		tmp.Offset = ""
+		sprints.Sprints = append(sprints.Sprints, tmp.Sprints...)
 	}
 	return sprints, nil
 }

@@ -28,7 +28,7 @@ type CardFields struct {
 
 	Category []string `json:"Category"`
 	Sprint   []string `json:"Sprint"`
-	Secteur  string   `json:"Secteur"`
+	Secteur  []string `json:"Secteur"`
 }
 
 type Card struct {

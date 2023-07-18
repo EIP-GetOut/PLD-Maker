@@ -1,29 +1,28 @@
 package airtable
 
-/*import (
+import (
 	"encoding/json"
 	"fmt"
 	"net/url"
 	"pld-maker/internal/tools"
 )
 
-type CategoryFields struct {
-	Name  string   `json:"Name"`
-	Cards []string `json:"Card"`
+type SectorFields struct {
+	Name string `json:"Name"`
 }
 
-type Category struct {
-	Id          string         `json:"id"`
-	CreatedTime string         `json:"createdTime"`
-	Fields      CategoryFields `json:"fields"`
+type Sector struct {
+	Id          string       `json:"id"`
+	CreatedTime string       `json:"createdTime"`
+	Fields      SectorFields `json:"fields"`
 }
 
-type Categories struct {
-	Categories []Category `json:"records"`
+type Sectors struct {
+	Sectors []Sector `json:"records"`
 }
 
-func (cli *Client) ListCategories(params *url.Values) (Categories, error) {
-	var categories Categories
+func (cli *Client) ListSectors(params *url.Values) (Sectors, error) {
+	var sectors Sectors
 	var parameters string
 	//Request
 	if params != nil {
@@ -31,50 +30,48 @@ func (cli *Client) ListCategories(params *url.Values) (Categories, error) {
 	}
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Category"+parameters, header))
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sector"+parameters, header))
 	//Json to Struct
-	if err := json.Unmarshal(data, &categories); err != nil {
-		return categories, err
+	if err := json.Unmarshal(data, &sectors); err != nil {
+		return sectors, err
 	}
-	return categories, nil
+	return sectors, nil
 }
 
-func (cli *Client) GetCategory(id string) (Category, error) {
-	var category Category
+func (cli *Client) GetSector(id string) (Sector, error) {
+	var sector Sector
 	//Request
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
 	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Cards/"+id, header))
 
 	//Json to Struct
-	if err := json.Unmarshal(data, &category); err != nil {
-		return category, err
+	if err := json.Unmarshal(data, &sector); err != nil {
+		return sector, err
 	}
-	return category, nil
+	return sector, nil
 }
 
-func (cli *Client) PrintCategories(categories []Category, indent string) {
-	fmt.Println("categories:")
+func (cli *Client) PrintSectors(sectors []Sector, indent string) {
+	fmt.Println("sectors:")
 	fmt.Println(indent + "{")
 
 	fmt.Println(indent + "  records: [")
-	for _, category := range categories {
-		cli.PrintCategory(category, indent+"    ")
+	for _, sector := range sectors {
+		cli.PrintSector(sector, indent+"    ")
 	}
 	fmt.Println(indent + "  ]")
 	fmt.Println(indent + "}")
 }
 
-func (cli *Client) PrintCategory(category Category, indent string) {
-	fields := category.Fields
+func (cli *Client) PrintSector(sector Sector, indent string) {
+	fields := sector.Fields
 
 	fmt.Println(indent+"{", "")
-	fmt.Println(indent+"  "+"id: ", category.Id)
-	fmt.Println(indent+"  "+"createdTime: ", category.CreatedTime)
+	fmt.Println(indent+"  "+"id: ", sector.Id)
+	fmt.Println(indent+"  "+"createdTime: ", sector.CreatedTime)
 	fmt.Println(indent+"  "+"Fields: {", "")
 	fmt.Println(indent+"    "+"Name: ", fields.Name)
-	fmt.Println(indent+"    "+"Cards: ", fields.Cards)
 	fmt.Println(indent+"  "+"}", "")
 	fmt.Println(indent+"}", "")
 }
-*/

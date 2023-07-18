@@ -26,26 +26,30 @@ func main() {
 	} else if len(sprints.Sprints) != 1 {
 		fmt.Printf("Error: %s", "multiple sprint In progress")
 	}
+	//Request Sector
+	paramSectors := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Name"}, "sort[0][direction]": {"asc"}}
+	sectors := tools.Must(airtableCli.ListSectors(&paramSectors))
+	airtableCli.PrintSectors(sectors.Sectors, "")
 	var categories = make(map[string]airtable.Categories)
 	var cards = make(map[string]airtable.Cards)
-	for _, secteur := range []string{"Backend", "Frontend", "Devops"} {
+	for _, sector := range sectors.Sectors {
 		//Request Categories
-		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, secteur)}}
-		categories[secteur] = tools.Must(airtableCli.ListCategories(&paramCategories))
+		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
+		categories[sector.Fields.Name] = tools.Must(airtableCli.ListCategories(&paramCategories))
 		//airtableCli.PrintCategories(categories[secteur].Categories, "")
 
 		//Request Cards
-		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, secteur)}}
-		cards[secteur] = tools.Must(airtableCli.ListCards(&paramCards))
+		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
+		cards[sector.Fields.Name] = tools.Must(airtableCli.ListCards(&paramCards))
 		//airtableCli.PrintCards(cards[secteur].Cards, "")
 	}
-	for i, secteur := range []string{"Backend", "Frontend", "Devops"} {
-		fmt.Printf("%d %s\n", i + 1, secteur)
-		for j, category := range categories[secteur].Categories {
-			fmt.Printf("%d.%d %s\n", i + 1, j + 1, category.Fields.Name)
-			for k, card := range cards[secteur].Cards {
+	for i, sector := range sectors.Sectors {
+		fmt.Printf("%d %s\n", i+1, sector.Fields.Name)
+		for j, category := range categories[sector.Fields.Name].Categories {
+			fmt.Printf("%d.%d %s\n", i+1, j+1, category.Fields.Name)
+			for k, card := range cards[sector.Fields.Name].Cards {
 				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {
-					fmt.Printf("%d.%d.%d %s\n", i + 1, j + 1, k + 1, card.Fields.Title)
+					fmt.Printf("%d.%d.%d %s\n", i+1, j+1, k+1, card.Fields.Title)
 				}
 			}
 		}

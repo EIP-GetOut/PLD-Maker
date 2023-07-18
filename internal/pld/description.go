@@ -14,6 +14,8 @@ func (cli *Client) AddDescription(title, object, author, e_mail, promo, last_upd
 	cli.Pdf.SetTextColor(0, 0, 0)
 	//	cli.Pdf.SetFontSize(8)
 	cli.Pdf.SetFont("Arial", "B", 10)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.MultiCell(cli.CardWith, 7, "Description du document", "1", "", false)
 	for i, item := range []keyValue{{key: "Titre", value: title}, {key: "Objet", value: object}, {key: "Auteur", value: author}, {key: "E-mail", value: e_mail}, {key: "Promo", value: promo}, {key: "Mise à jour", value: last_update}, {key: "Version", value: version}} {
 		item.value = WrapText(item.value, 60)
 		item.key += strings.Repeat("\n ", strings.Count(item.value, "\n"))

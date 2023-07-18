@@ -9,8 +9,12 @@ type Version struct {
 }
 
 func (cli *Client) AddVersions(versions ...Version) {
+	cli.AddPage()
 	cli.addVersionHeader()
 	for _, item := range versions {
+		if cli.Pdf.GetY() > cli.Height-50 {
+			cli.AddPage()
+		}
 		cli.addVersionRow(item.Date, item.Version, item.Author, item.Sections, item.Comments)
 	}
 }
@@ -22,7 +26,7 @@ func (cli *Client) addVersionHeader() {
 	cli.Pdf.SetTextColor(0, 0, 0)
 	cli.Pdf.SetFont("Arial", "", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	for i, item := range []string{"Date", "Version", "Auteur", "Section(s)", "Commentaires"} {
+	for i, item := range []string{"Date(yyyy/mm/dd)", "Version", "Auteur", "Section(s)", "Commentaires"} {
 		x := cli.Pdf.GetX()
 		y := cli.Pdf.GetY()
 		cli.Pdf.SetFillColor(60, 120, 216)

@@ -24,16 +24,15 @@ type Sprints struct {
 	Sprints []Sprint `json:"records"`
 }
 
-func (cli *Client) ListSprints(params *url.Values) (Sprints, error) {
+func (cli *Client) ListSprints(params url.Values) (Sprints, error) {
 	var sprints Sprints
-	var parameters string
 
-	if params != nil {
-		parameters = "?" + (*params).Encode()
-	}
+	//	if params != nil {
+	//		parameters = "?" + (*params).Encode()
+	//	}
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint"+parameters, header))
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint?"+params.Encode(), header))
 	//Json to Struct
 	if err := json.Unmarshal(data, &sprints); err != nil {
 		return sprints, err
@@ -46,7 +45,7 @@ func (cli *Client) GetSprint(id string) (Sprint, error) {
 	//Request
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Cards/"+id, header))
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint/"+id, header))
 
 	//Json to Struct
 	if err := json.Unmarshal(data, &sprint); err != nil {

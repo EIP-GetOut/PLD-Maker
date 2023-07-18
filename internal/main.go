@@ -12,53 +12,46 @@ import (
 
 func main() {
 	credential := tools.Must(os.ReadFile("./conf/credential.json"))
-	cli := tools.Must(pld.NewClient())
 	airtableCli := tools.Must(airtable.NewClient(credential))
 	fmt.Println(airtableCli.Token)
 
 	//Request Sprint
 	paramSprints := url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}}
-	sprints := tools.Must(airtableCli.ListSprints(&paramSprints))
+	sprints := tools.Must(airtableCli.ListSprints(paramSprints))
 	//fmt.Println(sprints)
 	//airtableCli.PrintSprints(sprints.Sprints, "")
 	if len(sprints.Sprints) < 1 {
 		panic("no sprint in progress")
 	} else if len(sprints.Sprints) != 1 {
-		fmt.Printf("Error: %s", "multiple sprint In progress")
+		panic(fmt.Sprintf("Error: %s", "multiple sprint In progress"))
 	}
 	//Request Sector
 	paramSectors := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Name"}, "sort[0][direction]": {"asc"}}
-	sectors := tools.Must(airtableCli.ListSectors(&paramSectors))
+	sectors := tools.Must(airtableCli.ListSectors(paramSectors))
 	airtableCli.PrintSectors(sectors.Sectors, "")
 	var categories = make(map[string]airtable.Categories)
 	var cards = make(map[string]airtable.Cards)
 	for _, sector := range sectors.Sectors {
 		//Request Categories
-		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
-		categories[sector.Fields.Name] = tools.Must(airtableCli.ListCategories(&paramCategories))
+		fmt.Println("test", sector.Fields.Name)
+		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
+		categories[sector.Fields.Name] = tools.Must(airtableCli.ListCategories(paramCategories))
 		//airtableCli.PrintCategories(categories[secteur].Categories, "")
 
 		//Request Cards
-		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Secteur})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
+		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
 		cards[sector.Fields.Name] = tools.Must(airtableCli.ListCards(&paramCards))
+		fmt.Println(cards[sector.Fields.Name])
 		//airtableCli.PrintCards(cards[secteur].Cards, "")
+		airtableCli.PrintCards(cards[sector.Fields.Name].Cards, "")
 	}
-	for i, sector := range sectors.Sectors {
-		fmt.Printf("%d %s\n", i+1, sector.Fields.Name)
-		for j, category := range categories[sector.Fields.Name].Categories {
-			fmt.Printf("%d.%d %s\n", i+1, j+1, category.Fields.Name)
-			for k, card := range cards[sector.Fields.Name].Cards {
-				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {
-					fmt.Printf("%d.%d.%d %s\n", i+1, j+1, k+1, card.Fields.Title)
-				}
-			}
-		}
-	}
+	PrintTable(sectors, categories, cards)
 
-	//	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
-	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
-	cli.SetFooter("", "", "", true, false)
-	//	weight
+	// PldClient
+	// You can use it to build a pdf.
+	//PDF
+	cli := tools.Must(pld.NewClient())
+	HeaderFooter(cli)
 	FirstPage(cli, sprints.Sprints[0].Fields.Number)
 	cli.AddPage()
 	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(sprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "1.0")
@@ -71,8 +64,30 @@ func main() {
 	cli.AddCard("1.1.3", "Info", 100, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"})
 	cli.AddPage()
 	cli.AddCard("1.1.4", "Test OF Size Page", 49, "Business", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"alexandre"})
+	cli.AddPage()
+	cli.AddCard("2.2.5", "Info", 100, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"})
+
 	err := cli.OutputFileAndClose("hello.pdf")
 	fmt.Println("error: ", err)
+}
+
+func PrintTable(sectors airtable.Sectors, categories map[string]airtable.Categories, cards map[string]airtable.Cards) {
+	for i, sector := range sectors.Sectors {
+		fmt.Printf("%d %s\n", i+1, sector.Fields.Name)
+		for j, category := range categories[sector.Fields.Name].Categories {
+			fmt.Printf("%d.%d %s\n", i+1, j+1, category.Fields.Name)
+			for k, card := range cards[sector.Fields.Name].Cards {
+				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {
+					fmt.Printf("%d.%d.%d %s\n", i+1 /*j+*/, 1, k+1, card.Fields.Title)
+				}
+			}
+		}
+	}
+}
+
+func HeaderFooter(cli *pld.Client) {
+	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
+	cli.SetFooter("", "", "", true, false)
 }
 
 func FirstPage(cli *pld.Client, sprintNumber int) {

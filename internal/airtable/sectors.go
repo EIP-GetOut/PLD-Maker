@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"pld-maker/internal/tools"
+	"time"
 )
 
 type SectorFields struct {
@@ -19,21 +20,33 @@ type Sector struct {
 
 type Sectors struct {
 	Sectors []Sector `json:"records"`
+	Offset  string   `json:"offset"`
 }
 
-func (cli *Client) ListSectors(params *url.Values) (Sectors, error) {
+func (cli *Client) ListSectors(params url.Values) (Sectors, error) {
 	var sectors Sectors
-	var parameters string
 	//Request
-	if params != nil {
-		parameters = "?" + (*params).Encode()
-	}
-	header := url.Values{}
-	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sector"+parameters, header))
+	header := url.Values{"Authorization": {"Bearer " + cli.Token}}
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sector?"+params.Encode(), header))
 	//Json to Struct
-	if err := json.Unmarshal(data, &sectors); err != nil {
-		return sectors, err
+	var tmp Sectors
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return tmp, err
+	}
+	sectors.Sectors = append(sectors.Sectors, tmp.Sectors...)
+	for tmp.Offset != "" {
+		params.Add("offset", tmp.Offset)
+		time.Sleep(500 * time.Millisecond)
+		data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sector?"+params.Encode(), header))
+		//Json to Struct
+		if err := json.Unmarshal(data, &tmp); err != nil {
+			return tmp, err
+		}
+		tmp.Offset = ""
+		sectors.Sectors = append(sectors.Sectors, tmp.Sectors...)
+	}
+	for i, item := range sectors.Sectors {
+		fmt.Println(i, item.Fields.Name)
 	}
 	return sectors, nil
 }

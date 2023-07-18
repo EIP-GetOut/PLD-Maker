@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"pld-maker/internal/tools"
+	"time"
 )
 
 type CategoryFields struct {
@@ -20,21 +21,30 @@ type Category struct {
 
 type Categories struct {
 	Categories []Category `json:"records"`
+	Offset     string     `json:"offset"`
 }
 
-func (cli *Client) ListCategories(params *url.Values) (Categories, error) {
+func (cli *Client) ListCategories(params url.Values) (Categories, error) {
 	var categories Categories
-	var parameters string
 	//Request
-	if params != nil {
-		parameters = "?" + (*params).Encode()
-	}
-	header := url.Values{}
-	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Category"+parameters, header))
+	header := url.Values{"Authorization": {"Bearer " + cli.Token}}
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Category?"+params.Encode(), header))
 	//Json to Struct
-	if err := json.Unmarshal(data, &categories); err != nil {
-		return categories, err
+	var tmp Categories
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return tmp, err
+	}
+	categories.Categories = append(categories.Categories, tmp.Categories...)
+	for tmp.Offset != "" {
+		params.Add("offset", tmp.Offset)
+		time.Sleep(500 * time.Millisecond)
+		data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Category?"+params.Encode(), header))
+		//Json to Struct
+		if err := json.Unmarshal(data, &tmp); err != nil {
+			return tmp, err
+		}
+		tmp.Offset = ""
+		categories.Categories = append(categories.Categories, tmp.Categories...)
 	}
 	return categories, nil
 }
@@ -44,7 +54,7 @@ func (cli *Client) GetCategory(id string) (Category, error) {
 	//Request
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Cards/"+id, header))
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Category/"+id, header))
 
 	//Json to Struct
 	if err := json.Unmarshal(data, &category); err != nil {

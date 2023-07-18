@@ -62,9 +62,9 @@ func (cli *Client) addVersionRow(date, version, author, sections, comments strin
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 
 	// WrapText
-	author = WrapText(author, 30)
-	sections = WrapText(sections, 30)
-	comments = WrapText(comments, 30)
+	author = WrapText(author, 32)
+	sections = WrapText(sections, 32)
+	comments = WrapText(comments, 32)
 
 	// Diff
 	authorCount := strings.Count(author, "\n")

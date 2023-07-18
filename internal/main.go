@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"pld-maker/internal/airtable"
+	"pld-maker/internal/epitech"
 	"pld-maker/internal/pld"
 	"pld-maker/internal/tools"
 	"strconv"
@@ -48,13 +49,34 @@ func main() {
 	// You can use it to build a pdf.
 	//PDF
 	cli := tools.Must(pld.NewClient())
-	HeaderFooter(cli)
-	FirstPage(cli, sprints.Sprints[0].Fields.Number)
+	epitech.HeaderFooter(cli)
+	epitech.FirstPage(cli, sprints.Sprints[0].Fields.Number)
 	cli.AddPage()
 	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(sprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "1.0")
 	cli.Ln(-1)
-	cli.AddVersionHeader()
-	cli.AddVersionRow("17/07/2023", "1.0.0", "Groupe Getout", "toutes", "Première version")
+	versions := []pld.Version{
+		{
+			Date:     "17/07/2023",
+			Version:  "1.0.0",
+			Author:   "Groupe Getout",
+			Sections: "toutes",
+			Comments: "Première version",
+		}, {
+			Date:     "20/07/2023",
+			Version:  "1.1.4",
+			Author:   "Groupe Getout",
+			Sections: "toutes",
+			Comments: "_",
+		}, {
+			Date:     "26/07/2023",
+			Version:  "2.0.0",
+			Author:   "Groupe Getout",
+			Sections: "toutes",
+			Comments: "Test & Learn",
+		},
+	}
+
+	cli.AddVersions(versions...)
 	cli.AddPage()
 	cli.AddCard("1.1.1", "CreateAccount", 20, "Utilisateur de la plateforme de type a et de context or of type of", "pouvoir me connecter", "I am myself\nyou are yourself\nhe is himself\nwe are ourselves\nyou are yourselves\nthey are themselves", "*definition of done*", 4, []string{"*assignee*"})
 	cli.AddCard("1.1.2", "Handler", 55, "Admin", "ajouter des livres", "*description*\n*description*", "*definition of done*", 1.5, []string{"perry", "erwan"})
@@ -88,18 +110,7 @@ func PrintTable(sectors airtable.Sectors, categories map[string]airtable.Categor
 	}
 }
 
-func HeaderFooter(cli *pld.Client) {
-	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
-	cli.SetFooter("", "", "", true, false)
-}
-
-func FirstPage(cli *pld.Client, sprintNumber int) {
-	cli.AddPage()
-	cli.AddImage("./conf/epitech.png", 50, 160, 50)
-	cli.AddTitle1("")
-	cli.AddTitle1("EPITECH INNOVATIVE PROJECT")
-	cli.AddTitle1("PROJECT LOG DOCUMENT")
-	cli.AddTitle1("SPRINT NUMERO " + strconv.Itoa(sprintNumber))
-	cli.Pdf.Ln(-1)
-	cli.AddTitle1B("PROMO 2025")
-}
+//func HeaderFooter(cli *pld.Client) {
+//	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
+//	cli.SetFooter("", "", "", true, false)
+//}

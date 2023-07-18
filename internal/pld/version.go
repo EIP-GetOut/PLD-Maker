@@ -1,6 +1,21 @@
 package pld
 
-func (cli *Client) AddVersionHeader() {
+type Version struct {
+	Date     string
+	Version  string
+	Author   string
+	Sections string
+	Comments string
+}
+
+func (cli *Client) AddVersions(versions ...Version) {
+	cli.addVersionHeader()
+	for _, item := range versions {
+		cli.addVersionRow(item.Date, item.Version, item.Author, item.Sections, item.Comments)
+	}
+}
+
+func (cli *Client) addVersionHeader() {
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 
 	cli.Pdf.SetDrawColor(255, 255, 255)
@@ -33,7 +48,7 @@ func (cli *Client) AddVersionHeader() {
 	}
 }
 
-func (cli *Client) AddVersionRow(date, version, author, sections, comments string) {
+func (cli *Client) addVersionRow(date, version, author, sections, comments string) {
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 
 	cli.Pdf.SetDrawColor(255, 255, 255)

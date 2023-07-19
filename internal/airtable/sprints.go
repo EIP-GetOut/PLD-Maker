@@ -30,6 +30,7 @@ func (cli *Client) ListSprints(params url.Values) (Sprints, error) {
 	var sprints Sprints
 	//Request
 	header := url.Values{"Authorization": {"Bearer " + cli.Token}}
+	fmt.Println(cli.APIpath + "/Sprint?" + params.Encode())
 	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Sprint?"+params.Encode(), header))
 	//Json to Struct
 	var tmp Sprints

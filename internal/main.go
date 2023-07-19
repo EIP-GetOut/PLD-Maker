@@ -14,36 +14,12 @@ import (
 func main() {
 	credential := tools.Must(os.ReadFile("./conf/credential.json"))
 	airtableCli := tools.Must(airtable.NewClient(credential))
-	//fmt.Println(airtableCli.Token)
-
-	//Request Sprint
-	paramSprints := url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}}
-	sprints := tools.Must(airtableCli.ListSprints(paramSprints))
-	//fmt.Println(sprints)
-	//airtableCli.PrintSprints(sprints.Sprints, "")
-	if len(sprints.Sprints) < 1 {
-		panic("no sprint in progress")
-	} else if len(sprints.Sprints) != 1 {
-		panic(fmt.Sprintf("Error: %s", "multiple sprint In progress"))
-	}
-	//Request Sector
-	paramSectors := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Name"}, "sort[0][direction]": {"asc"}}
-	sectors := tools.Must(airtableCli.ListSectors(paramSectors))
-	//airtableCli.PrintSectors(sectors.Sectors, "")
-	var categories = make(map[string]airtable.Categories)
-	var cards = make(map[string]airtable.Cards)
-	for _, sector := range sectors.Sectors {
-		//Request Categories
-		paramCategories := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
-		categories[sector.Fields.Name] = tools.Must(airtableCli.ListCategories(paramCategories))
-		//		airtableCli.PrintCategories(categories[sector.Fields.Name].Categories, "%")
-
-		//Request Cards
-		paramCards := url.Values{"filterByFormula": {fmt.Sprintf("AND(FIND(\"%s\",CONCATENATE(\"\",{Sprint})),FIND(\"%s\",CONCATENATE(\"\",{Sector})))", sprints.Sprints[0].Fields.Title, sector.Fields.Name)}}
-		cards[sector.Fields.Name] = tools.Must(airtableCli.ListCards(paramCards))
-		//		airtableCli.PrintCards(cards[sector.Fields.Name].Cards, "*")
-	}
-	PrintTable(sectors, categories, cards)
+	//Request Current Sprint
+	currentSprints, currentSectors, currentCategories, currentCards := epitech.GetCurrentData(*airtableCli)
+	PrintTable(currentSectors, currentCategories, currentCards)
+	//Request Previous Sprints
+	previousSectors, previousCategories, previousCards := epitech.GetPreviousData(*airtableCli)
+	PrintTable(previousSectors, previousCategories, previousCards)
 
 	paramVersions := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Date"}, "sort[0][direction]": {"asc"}}
 	versions := epitech.AirtableToPldVersion(tools.Must(airtableCli.ListVersions(paramVersions)).Versions)
@@ -53,9 +29,9 @@ func main() {
 	//PDF
 	cli := tools.Must(pld.NewClient())
 	epitech.HeaderFooter(cli)
-	epitech.FirstPage(cli, sprints.Sprints[0].Fields.Number)
+	epitech.FirstPage(cli, currentSprints.Sprints[0].Fields.Number)
 	cli.AddPage()
-	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(sprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "1.0")
+	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(currentSprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "1.0")
 	cli.AddVersions(versions...)
 
 	cli.AddPage()

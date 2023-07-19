@@ -1,7 +1,6 @@
 package pld
 
 import (
-	"fmt"
 	"pld-maker/internal/tools"
 	"strings"
 )
@@ -71,7 +70,7 @@ func (cli *Client) addVersionRow(date, version, author, sections, comments strin
 	sectionsCount := strings.Count(sections, "\n")
 	commentsCount := strings.Count(comments, "\n")
 	maxCount := tools.Max(authorCount, sectionsCount, commentsCount)
-	fmt.Println(authorCount, sectionsCount, commentsCount, maxCount)
+
 	// Calcul
 	date += strings.Repeat("\n ", maxCount)
 	version += strings.Repeat("\n ", maxCount)

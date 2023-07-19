@@ -16,40 +16,48 @@ type Card struct {
 	Jh               float64
 	DefinitionOfDone string
 	Assignee         []string
-	pldWeight        int
+	PldWeight        int
+	Archived         bool
 }
 
 //45 char
 
 func (cli *Client) AddCards(cards ...Card) {
-	//	var (
-	//		totalPldWeight int
-	//		page           int
-	//	)
+	//var (
+	//	totalPldWeight int
+	//	page           int
+	//)
 
 	for _, it := range cards {
-		//		totalPldWeight += it.pldWeight
-		//		if page < (totalPldWeight / 3) {
-		cli.AddPage()
+		//totalPldWeight += it.PldWeight
+		//if page < (totalPldWeight / 3) {
+		//	cli.AddPage()
 		//	page++
-		//		}
-		cli.AddCard(it.Number, it.Title, it.Progress, it.AsWho, it.IWant, it.Description, it.DefinitionOfDone, it.Jh, it.Assignee)
+		//}
+		cli.AddCard(it.Number, it.Title, it.Progress, it.AsWho, it.IWant, it.Description, it.DefinitionOfDone, it.Jh, it.Assignee, it.Archived)
 	}
 }
 
-func (cli *Client) AddCard(number string, title string, progress int, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string) {
+func (cli *Client) AddCard(number string, title string, progress int, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string, archived bool) {
 	cli.Pdf.SetDrawColor(0, 0, 0)
 	cli.Pdf.SetTextColor(0, 0, 0)
 	cli.Pdf.SetFontSize(8)
-	//style
-	//	div := 100 / (len(cli.PercentColors) - 2)
+
 	var color Color
-	if progress == 0 {
-		color = cli.PercentColors[0]
-	} else if progress == 100 {
-		color = cli.PercentColors[2]
+	if archived == false {
+		if progress == 0 {
+			color = cli.PercentColors[0]
+		} else if progress == 100 {
+			color = cli.PercentColors[2]
+		} else {
+			color = cli.PercentColors[1]
+		}
 	} else {
-		color = cli.PercentColors[1]
+		if progress == 100 {
+			color = cli.PercentColors[3]
+		} else {
+			color = cli.PercentColors[0]
+		}
 	}
 
 	//rows

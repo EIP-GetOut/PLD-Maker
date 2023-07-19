@@ -32,26 +32,26 @@ func (cli *Client) addVersionHeader() {
 	cli.Pdf.SetTextColor(0, 0, 0)
 	cli.Pdf.SetFont("Arial", "", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	for i, item := range []string{"Date(yyyy/mm/dd)", "Version", "Auteur", "Section(s)", "Commentaires"} {
+	for i, item := range []string{"Date (yyyy/mm/dd)", "Version", "Auteur", "Section(s)", "Commentaires"} {
 		x := cli.Pdf.GetX()
 		y := cli.Pdf.GetY()
 		cli.Pdf.SetFillColor(60, 120, 216)
 		cli.Pdf.SetTextColor(255, 255, 255)
 		if i == 0 {
-			cli.Pdf.MultiCell(30-1, 7, tr(item), "1", "", true)
+			cli.Pdf.MultiCell(35-1, 7, tr(item), "1", "", true)
 		} else if i == 1 {
 			cli.Pdf.MultiCell(20-1, 7, tr(item), "1", "", true)
 		} else {
-			cli.Pdf.MultiCell(((cli.CardWith-50)/3)-1, 7, tr(item), "1", "", true)
+			cli.Pdf.MultiCell(((cli.CardWith-55)/3)-1, 7, tr(item), "1", "", true)
 		}
 
 		if i < 4 {
 			if i == 0 {
-				cli.Pdf.SetXY(x+30-1, y)
+				cli.Pdf.SetXY(x+35-1, y)
 			} else if i == 1 {
 				cli.Pdf.SetXY(x+20-1, y)
 			} else {
-				cli.Pdf.SetXY(x+((cli.CardWith-50)/3)-1, y)
+				cli.Pdf.SetXY(x+((cli.CardWith-55)/3)-1, y)
 			}
 		}
 
@@ -62,9 +62,9 @@ func (cli *Client) addVersionRow(date, version, author, sections, comments strin
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 
 	// WrapText
-	author = WrapText(author, 32)
-	sections = WrapText(sections, 32)
-	comments = WrapText(comments, 32)
+	author = WrapText(author, 28)
+	sections = WrapText(sections, 28)
+	comments = WrapText(comments, 28)
 
 	// Diff
 	authorCount := strings.Count(author, "\n")
@@ -95,19 +95,19 @@ func (cli *Client) addVersionRow(date, version, author, sections, comments strin
 		x := cli.Pdf.GetX()
 		y := cli.Pdf.GetY()
 		if i == 0 {
-			cli.Pdf.MultiCell(30-1, 7, tr(item), "1", "", true)
+			cli.Pdf.MultiCell(35-1, 7, tr(item), "1", "", true)
 		} else if i == 1 {
 			cli.Pdf.MultiCell(20-1, 7, tr(item), "1", "", true)
 		} else {
-			cli.Pdf.MultiCell(((cli.CardWith-50)/3)-1, 7, tr(item), "1", "", true)
+			cli.Pdf.MultiCell(((cli.CardWith-55)/3)-1, 7, tr(item), "1", "", true)
 		}
 		if i < 4 {
 			if i == 0 {
-				cli.Pdf.SetXY(x+30-1, y)
+				cli.Pdf.SetXY(x+35-1, y)
 			} else if i == 1 {
 				cli.Pdf.SetXY(x+20-1, y)
 			} else {
-				cli.Pdf.SetXY(x+((cli.CardWith-50)/3)-1, y)
+				cli.Pdf.SetXY(x+((cli.CardWith-55)/3)-1, y)
 			}
 		}
 

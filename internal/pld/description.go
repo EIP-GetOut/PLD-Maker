@@ -12,7 +12,6 @@ func (cli *Client) AddDescription(title, object, author, e_mail, promo, last_upd
 
 	cli.Pdf.SetDrawColor(255, 255, 255)
 	cli.Pdf.SetTextColor(0, 0, 0)
-	//	cli.Pdf.SetFontSize(8)
 	cli.Pdf.SetFont("Arial", "B", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	cli.Pdf.MultiCell(cli.CardWith, 7, "Description du document", "1", "", false)

@@ -14,7 +14,13 @@ type Version struct {
 }
 
 func (cli *Client) AddVersions(versions ...Version) {
+	tr := cli.UnicodeTranslatorFromDescriptor("")
+
 	cli.AddPage()
+	cli.Pdf.SetTextColor(0, 0, 0)
+	cli.Pdf.SetFont("Arial", "B", 10)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.MultiCell(cli.CardWith, 7, tr("Tableau des révisions"), "1", "", false)
 	cli.addVersionHeader()
 	for _, item := range versions {
 		if cli.Pdf.GetY() > cli.Height-50 {

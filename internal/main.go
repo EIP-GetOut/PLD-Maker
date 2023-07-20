@@ -31,7 +31,7 @@ func main() {
 	epitech.HeaderFooter(cli)
 	epitech.FirstPage(cli, currentSprints.Sprints[0].Fields.Number)
 	cli.AddPage()
-	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(currentSprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "1.0")
+	cli.AddDescription("Project Log Document", "PLD Getout du sprint numéro "+strconv.Itoa(currentSprints.Sprints[0].Fields.Number), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", versions[len(versions)-1].Version)
 	cli.AddVersions(versions...)
 	cli.AddSummary(4, 4, map[string]int{}, map[string]int{}, 0)
 	cli.AddPage()

@@ -5,8 +5,9 @@ import (
 	"pld-maker/internal/airtable"
 )
 
-func GetSectors(airtableCards [](map[string]airtable.Cards)) map[string]int {
-	var result = make(map[string]int)
+func GetSectorsInfo(airtableCards [](map[string]airtable.Cards)) (map[string]int, map[string]int) {
+	var result1 = make(map[string]int)
+	var result2 = make(map[string]int)
 	var sortMapCards = make(map[string][]airtable.Card)
 
 	fmt.Println("-------------------------------------------")
@@ -24,10 +25,11 @@ func GetSectors(airtableCards [](map[string]airtable.Cards)) map[string]int {
 	}
 	fmt.Println("-------------------------------------------")
 	for k, v := range sortMapCards {
-		result[k] = len(v)
+		result1[k] = (len(v) / 30) + 1
+		result2[k] = len(v)
 		fmt.Println(k, len(v))
 	}
 	fmt.Println("-------------------------------------------")
 
-	return result
+	return result1, result2
 }

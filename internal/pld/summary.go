@@ -2,7 +2,7 @@ package pld
 
 import "strconv"
 
-func (cli *Client) AddSummary(summary int, schema int, deliveriesCard int, sectors map[string]int, userStories map[string]int, advanceReport int) {
+func (cli *Client) AddSummary(summary int, schema int, deliveryCards map[string]int, userStories map[string]int) {
 	var y float64
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 	tmpPage := cli.Pdf.PageNo()
@@ -11,9 +11,9 @@ func (cli *Client) AddSummary(summary int, schema int, deliveriesCard int, secto
 	tmpPage++
 
 	cli.Pdf.SetTextColor(0, 0, 0) //black
-	cli.Pdf.SetFont("Arial", "B", 10)
 	// Sommaire
 	y = cli.Pdf.GetY()
+	cli.Pdf.SetFont("Arial", "B", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, "Sommaire", "1", "", false)
 	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
@@ -22,35 +22,60 @@ func (cli *Client) AddSummary(summary int, schema int, deliveriesCard int, secto
 	//Shéma fonctionnel
 	tmpPage += summary
 	y = cli.Pdf.GetY()
+	cli.Pdf.SetFont("Arial", "B", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("1. Schéma Fonctionnel"), "1", "", false)
 	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
 
-	//Shéma fonctionnel
+	//Cartes des livrables
+	cli.Pdf.SetFont("Arial", "B", 10)
 	tmpPage += schema
 	y = cli.Pdf.GetY()
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("1. Schéma Fonctionnel"), "1", "", false)
+	cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("2. Cartes des livrables"), "1", "", false)
 	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
 
-	// cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	// cli.Pdf.MultiCell(cli.CardWith, 7, tr("1. Schéma Fonctionnel"), "1", "", false)
-	//
-	// cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	// cli.Pdf.MultiCell(cli.CardWith, 7, "2. Carte des livrables", "1", "", false)
-	//
-	// //--------------------- Realm ---------------------
-	// cli.Pdf.SetTextColor(60, 120, 216) //blue
-	// cli.Pdf.SetFont("Arial", "", 14)
-	// cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	// cli.Pdf.MultiCell(cli.CardWith, 7, "Sommaire", "1", "", false)
-	//
-	// //Shéma fonctionnel
-	// cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	// cli.Pdf.MultiCell(cli.CardWith, 7, tr("1. Schéma Fonctionnel"), "1", "", false)
-	//
-	// cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	// cli.Pdf.MultiCell(cli.CardWith, 7, "2. Carte des livrables", "1", "", false)
+	cli.Pdf.SetFont("Arial", "", 10)
+	sfIdx := 1
+	tmpPage++
+	for sector, pageSize := range deliveryCards {
+		y = cli.Pdf.GetY()
+		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(sfIdx)+" "+sector), "1", "", false)
+		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
+		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+		tmpPage += pageSize
+		sfIdx++
+	}
+
+	//UserStories
+	y = cli.Pdf.GetY()
+	cli.Pdf.SetFont("Arial", "B", 10)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3. User Stories"), "1", "", false)
+	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
+	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+
+	cli.Pdf.SetFont("Arial", "", 10)
+	idx := 1
+	tmpPage++
+	for sector, pageSize := range userStories {
+		y = cli.Pdf.GetY()
+		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(idx)+" "+sector), "1", "", false)
+		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
+		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+		tmpPage += pageSize
+		idx++
+	}
+
+	//Progress report
+	y = cli.Pdf.GetY()
+	cli.Pdf.SetFont("Arial", "B", 10)
+	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+	cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("4. Rapport d'avancement"), "1", "", false)
+	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
+	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
 }

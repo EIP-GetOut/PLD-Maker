@@ -35,9 +35,10 @@ func main() {
 	cli.AddVersions(versions...)
 
 	//	epitech.GetSectors()
-	epitech.GetSectors([](map[string]airtable.Cards){currentCards, previousCards})
+	//deliveryCards := epitech.GetDeliveryCardsInfo([](map[string]airtable.Cards){currentCards, previousCards})
+	deliveryCardsInfo, userStoriesInfo := epitech.GetSectorsInfo([](map[string]airtable.Cards){currentCards, previousCards})
 
-	cli.AddSummary(1, 4, 4, map[string]int{}, map[string]int{}, 0)
+	cli.AddSummary(1, 4, deliveryCardsInfo, userStoriesInfo)
 	cli.AddPage()
 	cli.AddCard("1.1.1", "CreateAccount", 20, "Utilisateur de la plateforme de type a et de context or of type of", "pouvoir me connecter", "I am myself\nyou are yourself\nhe is himself\nwe are ourselves\nyou are yourselves\nthey are themselves", "*definition of done*", 4, []string{"*assignee*"}, false)
 	cli.AddCard("1.1.2", "Handler", 55, "Admin", "ajouter des livres", "*description*\n*description*", "*definition of done*", 1.5, []string{"perry", "erwan"}, false)

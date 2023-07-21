@@ -3,33 +3,29 @@ package epitech
 import (
 	"fmt"
 	"pld-maker/internal/airtable"
+	"pld-maker/internal/tools"
 )
 
-func GetSectorsInfo(airtableCards [](map[string]airtable.Cards)) (map[string]int, map[string]int) {
-	var result1 = make(map[string]int)
-	var result2 = make(map[string]int)
+func ArrayMapCardsToMapArrayCard(airtableCards [](map[string]airtable.Cards)) ([]string, map[string][]airtable.Card) {
 	var sortMapCards = make(map[string][]airtable.Card)
-
-	fmt.Println("-------------------------------------------")
+	var sortArray []string
 	for _, cardMaps := range airtableCards {
 		for k, v := range cardMaps {
+			sortArray = append(sortArray, k)
 			sortMapCards[k] = append(sortMapCards[k], v.Cards...)
 		}
 	}
-	for k, v := range sortMapCards {
-		fmt.Println(k, ": {")
-		for _, card := range v {
-			fmt.Println("  ", card.Fields.Title)
-		}
-		fmt.Println("}")
-	}
-	fmt.Println("-------------------------------------------")
-	for k, v := range sortMapCards {
+	return tools.FilterUniqueArray(sortArray), sortMapCards
+}
+
+func GetSectorsInfo(airtableArrayCard map[string][]airtable.Card) (map[string]int, map[string]int) {
+	var result1 = make(map[string]int)
+	var result2 = make(map[string]int)
+
+	for k, v := range airtableArrayCard {
 		result1[k] = (len(v) / 30) + 1
 		result2[k] = len(v)
 		fmt.Println(k, len(v))
 	}
-	fmt.Println("-------------------------------------------")
-
 	return result1, result2
 }

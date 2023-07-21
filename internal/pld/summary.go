@@ -2,7 +2,7 @@ package pld
 
 import "strconv"
 
-func (cli *Client) AddSummary(summary int, schema int, deliveryCards map[string]int, userStories map[string]int) {
+func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, deliveryCards map[string]int, userStories map[string]int) {
 	var y float64
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 	tmpPage := cli.Pdf.PageNo()
@@ -40,13 +40,13 @@ func (cli *Client) AddSummary(summary int, schema int, deliveryCards map[string]
 	cli.Pdf.SetFont("Arial", "", 10)
 	sfIdx := 1
 	tmpPage++
-	for sector, pageSize := range deliveryCards {
+	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(sfIdx)+" "+sector), "1", "", false)
+		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("2."+strconv.Itoa(sfIdx)+" "+sector), "1", "", false)
 		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
-		tmpPage += pageSize
+		tmpPage += deliveryCards[sector]
 		sfIdx++
 	}
 
@@ -61,15 +61,25 @@ func (cli *Client) AddSummary(summary int, schema int, deliveryCards map[string]
 	cli.Pdf.SetFont("Arial", "", 10)
 	idx := 1
 	tmpPage++
-	for sector, pageSize := range userStories {
+	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(idx)+" "+sector), "1", "", false)
 		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
-		tmpPage += pageSize
+		tmpPage += userStories[sector]
 		idx++
+
 	}
+	//	for sector, pageSize := range userStories {
+	//		y = cli.Pdf.GetY()
+	//		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+	//		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(idx)+" "+sector), "1", "", false)
+	//		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
+	//		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+	//		tmpPage += pageSize
+	//		idx++
+	//	}
 
 	//Progress report
 	y = cli.Pdf.GetY()

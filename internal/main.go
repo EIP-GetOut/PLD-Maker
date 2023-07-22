@@ -20,10 +20,11 @@ func main() {
 	//Request Previous Sprints
 	previousSectors, previousCategories, previousCards := epitech.GetPreviousData(*airtableCli)
 	PrintTable(previousSectors, previousCategories, previousCards)
-
 	paramVersions := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Date"}, "sort[0][direction]": {"asc"}}
 	versions := epitech.AirtableToPldVersion(tools.Must(airtableCli.ListVersions(paramVersions)).Versions)
-
+	//fmt.Println("--------------------------------")
+	//fmt.Println(previousSectors)
+	//fmt.Println("--------------------------------")
 	// PldClient
 	// You can use it to build a pdf.
 	//PDF
@@ -39,23 +40,14 @@ func main() {
 	arraySectors, SectorsCards := epitech.ArrayMapCardsToMapArrayCard([](map[string]airtable.Cards){currentCards, previousCards})
 	deliveryCardsInfo, userStoriesInfo := epitech.GetSectorsInfo(SectorsCards)
 
-	fmt.Println("--------------------------------")
-	for key := range arraySectors {
-		fmt.Println(key)
-	}
-	cli.AddSummary(1, 4, arraySectors, deliveryCardsInfo, userStoriesInfo)
-	cli.AddPage()
-	cli.AddCard("1.1.1", "CreateAccount", 20, "Utilisateur de la plateforme de type a et de context or of type of", "pouvoir me connecter", "I am myself\nyou are yourself\nhe is himself\nwe are ourselves\nyou are yourselves\nthey are themselves", "*definition of done*", 4, []string{"*assignee*"}, false)
-	cli.AddCard("1.1.2", "Handler", 55, "Admin", "ajouter des livres", "*description*\n*description*", "*definition of done*", 1.5, []string{"perry", "erwan"}, false)
-	cli.AddCard("1.1.3", "Info", 100, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"}, false)
-	cli.AddPage()
-	cli.AddCard("1.1.4", "Test OF Size Page", 49, "Business", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"alexandre"}, false)
-	cli.AddPage()
-	cli.AddCard("2.2.5", "Info", 0, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"}, false)
-	cli.AddPage()
-	cli.AddCard("2.2.5", "Info", 100, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"}, true)
-	cli.AddCard("2.2.5", "Info", 99, "Presse", "ajouter des pubs", "*description*\n*description*", "*definition of done*", 1, []string{"inès"}, true)
+	cli.AddSummary(1, 1, arraySectors, deliveryCardsInfo, userStoriesInfo)
 
+	//SortedCards as UserStories
+	userStories := epitech.GetUserStories(arraySectors, previousCategories, currentCategories, previousCards, currentCards)
+	cli.AddPage()
+	cli.AddTitle1("carte Des livrables")
+
+	epitech.PrintUserStories(cli, arraySectors, userStories)
 	err := cli.OutputFileAndClose("hello.pdf")
 	fmt.Println("error: ", err)
 }
@@ -79,8 +71,3 @@ func PrintTable(sectors airtable.Sectors, categories map[string]airtable.Categor
 		}
 	}
 }
-
-//func HeaderFooter(cli *pld.Client) {
-//	cli.SetHeader("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
-//	cli.SetFooter("", "", "", true, false)
-//}

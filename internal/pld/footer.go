@@ -9,6 +9,7 @@ func (cli *Client) SetFooter(left, center, right string, pageNo bool, firstPageN
 		cli.Pdf.SetXY((cli.Width-cli.HeaderWidth)/2, cli.Height-10)
 		cli.Pdf.SetFont("Arial", "", 12)
 
+		cli.Pdf.SetTextColor(0, 0, 0)
 		cli.Pdf.SetDrawColor(0, 0, 0)
 		cli.Pdf.SetFillColor(255, 255, 255)
 		cli.Pdf.CellFormat(cli.HeaderWidth/3, 1, left, "", 0, "LM", true, 0, "")

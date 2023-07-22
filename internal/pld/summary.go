@@ -1,6 +1,9 @@
 package pld
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, deliveryCards map[string]int, userStories map[string]int) {
 	var y float64
@@ -46,6 +49,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("2."+strconv.Itoa(sfIdx)+" "+sector), "1", "", false)
 		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+		fmt.Println("+ ", tmpPage, deliveryCards[sector])
 		tmpPage += deliveryCards[sector]
 		sfIdx++
 	}
@@ -67,19 +71,11 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(idx)+" "+sector), "1", "", false)
 		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
+		fmt.Println("> ", tmpPage, userStories[sector])
 		tmpPage += userStories[sector]
 		idx++
 
 	}
-	//	for sector, pageSize := range userStories {
-	//		y = cli.Pdf.GetY()
-	//		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-	//		cli.Pdf.MultiCell(cli.CardWith-20, 7, tr("3."+strconv.Itoa(idx)+" "+sector), "1", "", false)
-	//		cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
-	//		cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
-	//		tmpPage += pageSize
-	//		idx++
-	//	}
 
 	//Progress report
 	y = cli.Pdf.GetY()

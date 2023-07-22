@@ -9,7 +9,7 @@ import (
 type Card struct {
 	Number           string
 	Title            string
-	Progress         int
+	Progress         float64
 	AsWho            string
 	IWant            string
 	Description      string
@@ -22,23 +22,14 @@ type Card struct {
 
 //45 char
 
-func (cli *Client) AddCards(cards ...Card) {
-	//var (
-	//	totalPldWeight int
-	//	page           int
-	//)
-
+func (cli *Client) AddCards(headerCardFunction func(cli *Client), cards ...Card) {
 	for _, it := range cards {
-		//totalPldWeight += it.PldWeight
-		//if page < (totalPldWeight / 3) {
-		//	cli.AddPage()
-		//	page++
-		//}
+		headerCardFunction(cli)
 		cli.AddCard(it.Number, it.Title, it.Progress, it.AsWho, it.IWant, it.Description, it.DefinitionOfDone, it.Jh, it.Assignee, it.Archived)
 	}
 }
 
-func (cli *Client) AddCard(number string, title string, progress int, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string, archived bool) {
+func (cli *Client) AddCard(number string, title string, progress float64, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string, archived bool) {
 	cli.Pdf.SetDrawColor(0, 0, 0)
 	cli.Pdf.SetTextColor(0, 0, 0)
 	cli.Pdf.SetFontSize(8)
@@ -80,13 +71,13 @@ func (cli *Client) AddCard(number string, title string, progress int, asWho stri
 }
 
 // title should be cut when string len is over 25 without a \n
-func (cli *Client) addCardsRow1(color Color, number, title string, progress int) {
+func (cli *Client) addCardsRow1(color Color, number, title string, progress float64) {
 	tr := cli.UnicodeTranslatorFromDescriptor("")
 	//add \n
 	WrapedTitle := WrapText(title, 25)
 	diffLen := strings.Count(WrapedTitle, "\n")
 	Progress := "Progres" + strings.Repeat("\n ", diffLen)
-	ProgressValue := strconv.Itoa(progress) + " %" + strings.Repeat("\n ", diffLen)
+	ProgressValue := strconv.FormatFloat(progress, 'f', 0, 64) + " %" + strings.Repeat("\n ", diffLen)
 	//display
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 	for i, str := range []string{number + " " + tr(WrapedTitle), Progress, ProgressValue} {

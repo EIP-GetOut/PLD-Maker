@@ -42,7 +42,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 
 	cli.Pdf.SetFont("Arial", "", 10)
 	sfIdx := 1
-	tmpPage++
+	//tmpPage++
 	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
@@ -64,7 +64,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 
 	cli.Pdf.SetFont("Arial", "", 10)
 	idx := 1
-	tmpPage++
+	//tmpPage++
 	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)

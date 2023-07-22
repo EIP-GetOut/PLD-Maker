@@ -66,12 +66,14 @@ func AssigneeToString(assignees []airtable.Assignee) []string {
 	return result
 }
 
-func PrintUserStories(cli *pld.Client, arraySectors []string, userStories UserStories) {
+func AddUserStories(cli *pld.Client, arraySectors []string, userStories UserStories) {
 	tr := cli.UnicodeTranslatorFromDescriptor("")
-
 	for i, sector := range arraySectors {
 		fmt.Println("-", sector)
 		cli.AddPage()
+		if i == 0 {
+			cli.AddTitle1("2. User Stories")
+		}
 		cli.Pdf.SetDrawColor(255, 255, 255)
 		cli.Pdf.SetTextColor(0, 0, 0)
 		cli.Pdf.SetFont("Arial", "B", 10)
@@ -88,6 +90,44 @@ func PrintUserStories(cli *pld.Client, arraySectors []string, userStories UserSt
 					cli.AddPage()
 				}
 				cli.AddCard(fmt.Sprintf("%d.%d.%d", i+1, j+1, k+1), card.Card.Fields.Title, card.Card.Fields.Progress*100, card.Card.Fields.AsWho, card.Card.Fields.IWant, card.Card.Fields.Description, card.Card.Fields.DefinitionOfDone, card.Card.Fields.Jh, AssigneeToString(card.Card.Fields.Assignee), card.Archived)
+				alreadyHere = true
+			}
+			j++
+		}
+	}
+}
+
+func AddDeliveryCards(cli *pld.Client, arraySectors []string, userStories UserStories) {
+	tr := cli.UnicodeTranslatorFromDescriptor("")
+
+	for i, sector := range arraySectors {
+		fmt.Println("-", sector)
+		if i != 0 {
+			cli.AddPage()
+		}
+		cli.Pdf.SetDrawColor(255, 255, 255)
+		cli.Pdf.SetTextColor(0, 0, 0)
+		cli.Pdf.SetFont("Arial", "B", 10)
+		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+		cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("%d %s", i+1, sector)), "1", "", false)
+
+		j := 0
+		alreadyHere := false
+		for categories, cards := range userStories[sector] {
+			fmt.Println("- -", categories)
+			for k, card := range cards {
+				fmt.Println("- - -", card.Card.Fields.Title)
+				if j != 0 || alreadyHere == true {
+					if k%31 == 30 {
+						cli.AddPage()
+					}
+				}
+				cli.Pdf.SetDrawColor(255, 255, 255)
+				cli.Pdf.SetTextColor(0, 0, 0)
+				cli.Pdf.SetFont("Arial", "B", 10)
+				cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+				cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("%d.%d.%d %s", i+1, j+1, k+1, card.Card.Fields.Title)), "1", "", false)
+
 				alreadyHere = true
 			}
 			j++

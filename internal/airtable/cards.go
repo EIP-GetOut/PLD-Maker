@@ -73,7 +73,7 @@ func (cli *Client) GetCard(id string) (Card, error) {
 	//Request
 	header := url.Values{}
 	header.Add("Authorization", "Bearer "+cli.Token)
-	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Cards/"+id, header))
+	data := tools.Must(tools.RequestGet(cli.Client, cli.APIpath+"/Card/"+id, header))
 
 	//Json to Struct
 	if err := json.Unmarshal(data, &card); err != nil {

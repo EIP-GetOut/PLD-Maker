@@ -72,7 +72,7 @@ func AddUserStories(cli *pld.Client, arraySectors []string, userStories UserStor
 		fmt.Println("-", sector)
 		cli.AddPage()
 		if i == 0 {
-			cli.AddTitle1("2. User Stories")
+			cli.AddTitle1("3. User Stories")
 		}
 		cli.Pdf.SetDrawColor(255, 255, 255)
 		cli.Pdf.SetTextColor(0, 0, 0)

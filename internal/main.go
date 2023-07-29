@@ -16,9 +16,9 @@ func main() {
 	credential := tools.Must(os.ReadFile("./conf/credential.json"))
 	airtableCli := tools.Must(airtable.NewClient(credential))
 	//Request Current Sprint
-	currentSprints, _, currentCategories, currentCards := epitech.GetCurrentData(*airtableCli)
+	currentSprints, _, currentCategories, currentCards := airtableCli.GetCurrentData()
 	//Request Previous Sprints
-	_, previousCategories, previousCards := epitech.GetPreviousData(*airtableCli)
+	_, previousCategories, previousCards := airtableCli.GetPreviousData()
 	paramVersions := url.Values{"filterByFormula": {""}, "sort[0][field]": {"Date"}, "sort[0][direction]": {"asc"}}
 	versions := epitech.AirtableToPldVersion(tools.Must(airtableCli.ListVersions(paramVersions)).Versions)
 

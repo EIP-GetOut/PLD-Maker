@@ -14,7 +14,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 	tmpPage++
 
 	cli.Pdf.SetTextColor(0, 0, 0) //black
-	// Sommaire
+	// Summary
 	y = cli.Pdf.GetY()
 	cli.Pdf.SetFont("Arial", "B", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
@@ -22,7 +22,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
 
-	//Shéma fonctionnel
+	//ShémaFonctionnel
 	tmpPage += summary
 	y = cli.Pdf.GetY()
 	cli.Pdf.SetFont("Arial", "B", 10)
@@ -31,7 +31,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 	cli.Pdf.SetXY(((cli.Width-cli.CardWith)/2)+cli.CardWith-20, y)
 	cli.Pdf.MultiCell(cli.CardWith-20, 7, strconv.Itoa(tmpPage), "1", "", false)
 
-	//Cartes des livrables
+	//DeliveryCards
 	cli.Pdf.SetFont("Arial", "B", 10)
 	tmpPage += schema
 	y = cli.Pdf.GetY()
@@ -42,7 +42,6 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 
 	cli.Pdf.SetFont("Arial", "", 10)
 	sfIdx := 1
-	//tmpPage++
 	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
@@ -64,7 +63,6 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 
 	cli.Pdf.SetFont("Arial", "", 10)
 	idx := 1
-	//tmpPage++
 	for _, sector := range arraySectors {
 		y = cli.Pdf.GetY()
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
@@ -77,7 +75,7 @@ func (cli *Client) AddSummary(summary int, schema int, arraySectors []string, de
 
 	}
 
-	//Progress report
+	//ProgressReport
 	y = cli.Pdf.GetY()
 	cli.Pdf.SetFont("Arial", "B", 10)
 	cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)

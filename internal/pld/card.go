@@ -20,15 +20,6 @@ type Card struct {
 	Archived         bool
 }
 
-//45 char
-
-func (cli *Client) AddCards(headerCardFunction func(cli *Client), cards ...Card) {
-	for _, it := range cards {
-		headerCardFunction(cli)
-		cli.AddCard(it.Number, it.Title, it.Progress, it.AsWho, it.IWant, it.Description, it.DefinitionOfDone, it.Jh, it.Assignee, it.Archived)
-	}
-}
-
 func (cli *Client) AddCard(number string, title string, progress float64, asWho string, iWant string, description string, definitionOfDone string, jh float64, assignee []string, archived bool) {
 	cli.Pdf.SetDrawColor(0, 0, 0)
 	cli.Pdf.SetTextColor(0, 0, 0)

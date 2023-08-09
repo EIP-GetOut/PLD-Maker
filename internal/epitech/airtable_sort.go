@@ -46,7 +46,7 @@ func GetUserStories(arraySectors []string, previousCategories map[string]airtabl
 			fmt.Printf("%d.%d %s\n", i+1, j+1, category.Fields.Name)
 			for k, card := range currentCards[sector].Cards {
 				if card.Fields.Category != nil && category.Id == card.Fields.Category[0] {
-					fmt.Printf("%d.%d.%d %s\n", i+1, j+1, k+1, card.Fields.Title)
+					fmt.Printf("%d.%d.%d %s, %s\n", i+1, j+1, k+1, card.Fields.Title)
 					cardInfos = append(cardInfos, CardInfo{Card: card, Archived: false})
 				}
 			}
@@ -76,7 +76,7 @@ func AddUserStories(cli *pld.Client, arraySectors []string, userStories UserStor
 		}
 		cli.Pdf.SetDrawColor(255, 255, 255)
 		cli.Pdf.SetTextColor(0, 0, 0)
-		cli.Pdf.SetFont("Arial", "B", 10)
+		cli.Pdf.SetFont("Arial", "B", 15)
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 		cli.Pdf.MultiCell(cli.CardWith, 7, tr(sector), "1", "", false)
 
@@ -107,7 +107,7 @@ func AddDeliveryCards(cli *pld.Client, arraySectors []string, userStories UserSt
 		}
 		cli.Pdf.SetDrawColor(255, 255, 255)
 		cli.Pdf.SetTextColor(0, 0, 0)
-		cli.Pdf.SetFont("Arial", "B", 10)
+		cli.Pdf.SetFont("Arial", "B", 15)
 		cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
 		cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("%d %s", i+1, sector)), "1", "", false)
 
@@ -115,18 +115,43 @@ func AddDeliveryCards(cli *pld.Client, arraySectors []string, userStories UserSt
 		alreadyHere := false
 		for categories, cards := range userStories[sector] {
 			fmt.Println("- -", categories)
+
+			cli.Pdf.SetDrawColor(255, 255, 255)
+			cli.Pdf.SetTextColor(0, 0, 0)
+			cli.Pdf.SetFont("Arial", "B", 12)
+			cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
+			cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("    %d.%d %s", i+1, j+1, categories)), "1", "", false)
+
 			for k, card := range cards {
-				fmt.Println("- - -", card.Card.Fields.Title)
 				if j != 0 || alreadyHere == true {
 					if k%31 == 30 {
 						cli.AddPage()
 					}
 				}
+
+				var color pld.Color
+				if card.Archived == false {
+					if card.Card.Fields.Progress == 0 {
+						color = cli.PercentColors[0]
+					} else if card.Card.Fields.Progress == 100 {
+						color = cli.PercentColors[2]
+					} else {
+						color = cli.PercentColors[1]
+					}
+				} else {
+					if card.Card.Fields.Progress == 100 {
+						color = cli.PercentColors[3]
+					} else {
+						color = cli.PercentColors[0]
+					}
+				}
+				fmt.Println("- - -", card.Card.Fields.Title)
+
 				cli.Pdf.SetDrawColor(255, 255, 255)
-				cli.Pdf.SetTextColor(0, 0, 0)
+				cli.Pdf.SetTextColor(color.R, color.G, color.B)
 				cli.Pdf.SetFont("Arial", "B", 10)
 				cli.Pdf.SetX((cli.Width - cli.CardWith) / 2)
-				cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("%d.%d.%d %s", i+1, j+1, k+1, card.Card.Fields.Title)), "1", "", false)
+				cli.Pdf.MultiCell(cli.CardWith, 7, tr(fmt.Sprintf("        %d.%d.%d %s", i+1, j+1, k+1, card.Card.Fields.Title)), "1", "", false)
 
 				alreadyHere = true
 			}

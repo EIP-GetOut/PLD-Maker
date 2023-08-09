@@ -25,7 +25,6 @@ type CardFields struct {
 	Jh               float64    `json:"JH"`
 	Assignee         []Assignee `json:"Assignees"`
 	OrderedJH        string     `json:"Ordered JH"`
-	Weight           int        `json:"pldWeight"`
 
 	Category []string `json:"Category"`
 	Sprint   []string `json:"Sprint"`

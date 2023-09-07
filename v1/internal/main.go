@@ -12,6 +12,7 @@ func main() {
 	pdfCli := pdf.Client(tools.Must(fpdfwrapper.NewClient()))
 	// pldCli := pld.Client(tools.Must(epipld.NewClient()))
 	pdfCli.NewFile("hello")
-	pdfCli.Header("string", "", "")
+	pdfCli.Header("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
+	pdfCli.Footer("", "", "", &pdf.FooterParams{PageNo: true, FirstPageNo: true})
 	pdfCli.CloseFile()
 }

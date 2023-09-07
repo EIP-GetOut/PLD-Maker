@@ -18,3 +18,9 @@ type TableParams struct {
 	Head *TextParams
 	Body *TextParams
 }
+
+// if you setup footer pageNo you won't display right string on your pdf
+type FooterParams struct {
+	PageNo      bool
+	FirstPageNo bool
+}

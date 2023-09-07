@@ -7,7 +7,7 @@ type Client interface {
 
 	//HeaderFooter
 	Header(left, center, right string)
-	Footer(left, center, right string, pageNo bool, firstPageNo bool)
+	Footer(left, center, right string, footerParams *FooterParams)
 
 	//Text
 	Title(str string, params *TextParams) //30px

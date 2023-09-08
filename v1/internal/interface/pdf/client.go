@@ -4,6 +4,7 @@ type Client interface {
 	//Fundamental
 	NewFile(filename string)
 	CloseFile()
+	NewPage()
 
 	//HeaderFooter
 	Header(left, center, right string)

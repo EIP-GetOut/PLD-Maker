@@ -7,6 +7,7 @@ import (
 func (cli *Client) NewFile(filename string) {
 	cli.fileName = filename
 	cli.Pdf = fpdf.New("P", "mm", "A4", "")
+
 	cli.Width, cli.Height = cli.Pdf.GetPageSize()
 	if cli.Pdf == nil {
 		panic("fpdf.New failed")
@@ -22,7 +23,13 @@ func (cli *Client) NewFile(filename string) {
 }
 
 func (cli *Client) CloseFile() {
-	if err := cli.Pdf.OutputFileAndClose(cli.fileName + ".pdf"); err != nil {
+	err := cli.Pdf.OutputFileAndClose(cli.fileName + ".pdf")
+	if err != nil {
 		panic(err)
 	}
+}
+
+func (cli *Client) NewPage() {
+	cli.Pdf.AddPage()
+	cli.Pdf.SetXY(10, 20)
 }

@@ -6,7 +6,7 @@ type TextParams struct {
 	Italic     bool
 	Underline  bool
 	Overline   bool
-	Size       *int
+	Size       *float64
 	TextColor  *Color
 	Background *Color
 }

@@ -1,7 +1,7 @@
 package pdf
 
 type Color struct {
-	r int
-	g int
-	b int
+	R int
+	G int
+	B int
 }

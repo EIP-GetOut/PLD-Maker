@@ -15,7 +15,14 @@ func main() {
 	pdfCli.Header("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
 	pdfCli.Footer("", "", "", &pdf.FooterParams{PageNo: true, FirstPageNo: true})
 	pdfCli.NewPage()
-	pdfCli.Text("test", &pdf.TextParams{Bold: false})
+	//	pdfCli
+	pdfCli.Text("loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum.", nil)
+	pdfCli.Title("Title", nil)
+	pdfCli.SubTitle("SubTitle", nil)
+	pdfCli.Heading1("Heading1", nil)
+	pdfCli.Heading2("Heading2", nil)
+	pdfCli.Text("Text: loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum.", nil)
+	pdfCli.Image2("../conf/epitech.png", 100, 30, nil)
 	pdfCli.CloseFile()
 }
 

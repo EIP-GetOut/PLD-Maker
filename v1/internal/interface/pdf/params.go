@@ -6,9 +6,16 @@ type TextParams struct {
 	Italic     bool
 	Underline  bool
 	Overline   bool
-	Size       *float64
+	Size       float64
 	TextColor  *Color
 	Background *Color
+}
+
+// Image
+type ImageParams struct {
+	x        float64
+	y        float64
+	yPercent bool
 }
 
 // Table

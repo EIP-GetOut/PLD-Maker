@@ -19,6 +19,7 @@ type Client interface {
 
 	//More
 	Image(y, w, h float64, filepath string)
+	Image2(filepath string, w, h float64, params *ImageParams)
 	Table(data [][]string, tableParams *TableParams)
 
 	//Miscellaneous

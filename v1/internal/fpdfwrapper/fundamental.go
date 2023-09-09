@@ -15,6 +15,7 @@ func (cli *Client) NewFile(filename string) {
 
 	cli.HeaderWidth = 190
 	cli.FooterWidth = 190
+	cli.ImageWidth = 200
 
 	cli.TableWidth = 180
 	cli.TextWidth = 180

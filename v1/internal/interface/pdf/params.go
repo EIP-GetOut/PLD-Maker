@@ -1,5 +1,14 @@
 package pdf
 
+type HorizontalPosition int64
+
+const (
+	Default HorizontalPosition = iota
+	Left
+	Center
+	Right
+)
+
 // Text
 type TextParams struct {
 	Bold       bool
@@ -9,21 +18,16 @@ type TextParams struct {
 	Size       float64
 	TextColor  *Color
 	Background *Color
+	Align      HorizontalPosition
 }
 
 // Image
 type ImageParams struct {
-	x        float64
-	y        float64
-	yPercent bool
-}
-
-// Table
-type TableParams struct {
-	Top  bool
-	Left bool
-	Head *TextParams
-	Body *TextParams
+	X              float64
+	Y              float64
+	XPercent       bool
+	YPercent       bool
+	TopLeftGravity bool
 }
 
 // if you setup footer pageNo you won't display right string on your pdf

@@ -13,16 +13,28 @@ func main() {
 	// pldCli := pld.Client(tools.Must(epipld.NewClient()))
 	pdfCli.NewFile("hello")
 	pdfCli.Header("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
-	pdfCli.Footer("", "", "", &pdf.FooterParams{PageNo: true, FirstPageNo: true})
+	pdfCli.Footer("", "", "", &pdf.FooterParams{PageNo: true, FirstPageNo: false})
 	pdfCli.NewPage()
 	//	pdfCli
-	pdfCli.Text("loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum.", nil)
 	pdfCli.Title("Title", nil)
 	pdfCli.SubTitle("SubTitle", nil)
 	pdfCli.Heading1("Heading1", nil)
 	pdfCli.Heading2("Heading2", nil)
 	pdfCli.Text("Text: loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum. loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum loreal ipsum.", nil)
-	pdfCli.Image2("../conf/epitech.png", 100, 30, nil)
+	pdfCli.Image("../conf/epitech.png", 150, 45, &pdf.ImageParams{X: 0.5, XPercent: true, TopLeftGravity: true})
+	table := pdf.Table{
+		Rows: []pdf.Row{
+			{
+				Cells: []pdf.Cell{
+					{Str: "10", Percent: 10, Params: nil},
+					{Str: "90", Percent: 90, Params: nil},
+				},
+			},
+		},
+		Params: nil,
+	}
+
+	pdfCli.Table(table)
 	pdfCli.CloseFile()
 }
 

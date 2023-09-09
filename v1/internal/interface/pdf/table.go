@@ -1,15 +1,23 @@
 package pdf
 
+type TableParams struct {
+	Background *Color
+	TextColor  *Color
+	TableColor *Color
+}
+
 type Cell struct {
-	data    string
-	percent float64
+	Str     string
+	Percent float64
+	Params  *TableParams
 }
 
 type Row struct {
-	cells []Cell
+	Cells  []Cell
+	Params *TableParams
 }
 
 type Table struct {
-	rows []Row
-	data string
+	Rows   []Row
+	Params *TableParams
 }

@@ -18,9 +18,8 @@ type Client interface {
 	Text(str string, params *TextParams)
 
 	//More
-	Image(y, w, h float64, filepath string)
-	Image2(filepath string, w, h float64, params *ImageParams)
-	Table(data [][]string, tableParams *TableParams)
+	Image(filepath string, w, h float64, params *ImageParams)
+	Table(data Table)
 
 	//Miscellaneous
 	UnicodeTranslator(str string) string // simplified from fpdf with codePageString

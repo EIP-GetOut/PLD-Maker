@@ -13,6 +13,7 @@ type Client struct {
 	//Specific
 	HeaderWidth float64
 	FooterWidth float64
+	ImageWidth  float64
 	TableWidth  float64
 	TextWidth   float64
 	//Miscellaneous

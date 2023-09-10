@@ -9,6 +9,7 @@ type TableParams struct {
 type Cell struct {
 	Str     string
 	Percent float64
+	ZtoO    bool
 	Params  *TableParams
 }
 

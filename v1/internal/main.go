@@ -26,12 +26,21 @@ func main() {
 		Rows: []pdf.Row{
 			{
 				Cells: []pdf.Cell{
-					{Str: "10", Percent: 10, Params: nil},
-					{Str: "90", Percent: 90, Params: nil},
+					{Str: "___", Percent: 30, Params: nil},
+					{Str: "---", Percent: 30, Params: nil},
+					{Str: "====", Percent: 40, Params: nil},
+				},
+				Params: &pdf.TableParams{Background: &pdf.Color{R: 255, G: 255, B: 255}},
+			},
+			{
+				Cells: []pdf.Cell{
+					{Str: "__", Percent: 20, Params: nil},
+					{Str: "--", Percent: 20, Params: nil},
+					{Str: "======", Percent: 60, Params: nil},
 				},
 			},
 		},
-		Params: nil,
+		Params: &pdf.TableParams{Background: &pdf.Color{R: 255, G: 255, B: 255}},
 	}
 
 	pdfCli.Table(table)

@@ -54,4 +54,5 @@ func (cli *Client) Image(filepath string, w, h float64, params *pdf.ImageParams)
 	x, y = cli.setImageParams(x, y, w, h, params)
 
 	cli.Pdf.ImageOptions("logo", x, y, w, h, false, opt, 0, "")
+	cli.Pdf.SetY(y + h)
 }

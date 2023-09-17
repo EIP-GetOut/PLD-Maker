@@ -6,10 +6,10 @@ import (
 
 func (cli *Client) NewFile(filename string) {
 	cli.fileName = filename
-	cli.Pdf = fpdf.New("P", "mm", "A4", "")
+	cli.pdf = fpdf.New("P", "mm", "A4", "")
 
-	cli.Width, cli.Height = cli.Pdf.GetPageSize()
-	if cli.Pdf == nil {
+	cli.Width, cli.Height = cli.pdf.GetPageSize()
+	if cli.pdf == nil {
 		panic("fpdf.New failed")
 	}
 
@@ -20,17 +20,21 @@ func (cli *Client) NewFile(filename string) {
 	cli.TableWidth = 180
 	cli.TextWidth = 180
 
-	cli.translator = cli.Pdf.UnicodeTranslatorFromDescriptor("")
+	cli.translator = cli.pdf.UnicodeTranslatorFromDescriptor("")
 }
 
 func (cli *Client) CloseFile() {
-	err := cli.Pdf.OutputFileAndClose(cli.fileName + ".pdf")
+	err := cli.pdf.OutputFileAndClose(cli.fileName + ".pdf")
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (cli *Client) NewPage() {
-	cli.Pdf.AddPage()
-	cli.Pdf.SetXY(10, 20)
+	cli.pdf.AddPage()
+	cli.pdf.SetXY(10, 20)
+}
+
+func (cli *Client) NewLine() {
+	cli.pdf.Ln(-1)
 }

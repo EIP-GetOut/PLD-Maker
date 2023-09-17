@@ -5,5 +5,5 @@ func (cli *Client) UnicodeTranslator(str string) string {
 }
 
 func (cli *Client) PageNo() int {
-	return cli.Pdf.PageNo()
+	return cli.pdf.PageNo()
 }

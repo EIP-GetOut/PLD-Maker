@@ -11,14 +11,14 @@ type Client interface {
 	Footer(left, center, right string, footerParams *FooterParams)
 
 	//Text
-	Title(str string, params *TextParams) //30px
-	SubTitle(str string, params *TextParams)
-	Heading1(str string, params *TextParams)
-	Heading2(str string, params *TextParams)
-	Text(str string, params *TextParams)
+	Title(text Text) //30px
+	SubTitle(text Text)
+	Heading1(text Text)
+	Heading2(text Text)
+	Text(text Text)
 
 	//More
-	Image(filepath string, w, h float64, params *ImageParams)
+	Image(image Image)
 	Table(data Table)
 
 	//Miscellaneous

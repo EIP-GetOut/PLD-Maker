@@ -6,7 +6,7 @@ import (
 
 type Client struct {
 	//Global
-	Pdf      *fpdf.Fpdf
+	pdf      *fpdf.Fpdf
 	fileName string
 	Width    float64
 	Height   float64

@@ -10,6 +10,7 @@ type File struct {
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 	Url    string `json:"url"`
+	Type   string `json:"type"`
 }
 
 type SchemaFields struct {
@@ -51,6 +52,7 @@ func SchemaTranslater(tmp Schema) db.Schema {
 		Width:  tmp.Fields.Files[0].Width,
 		Height: tmp.Fields.Files[0].Height,
 		Url:    tmp.Fields.Files[0].Url,
+		Type:   tmp.Fields.Files[0].Type,
 		Title:  tmp.Fields.Title,
 	}
 }

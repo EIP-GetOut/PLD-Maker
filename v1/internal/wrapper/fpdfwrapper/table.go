@@ -79,32 +79,51 @@ func (cli *Client) cellAlign(tableParams *pdf.TableParams, rowParams *pdf.RowPar
 }
 
 func (cli *Client) Table(table pdf.Table) {
-	var alignStr string = ""
-	var width float64 = tools.Ternary((table.Params != nil && table.Params.Width != 0), table.Params.Width, cli.TableWidth)
-	var height float64 = tools.Ternary((table.Params != nil && table.Params.RowHeight != 0), table.Params.RowHeight, 5)
+	var (
+		alignStr string
+		width    float64
+		height   float64
+	)
+	if table.Params != nil && table.Params.Width != 0 {
+		width = table.Params.Width
+	} else {
+		width = cli.TableWidth
+	}
+	if table.Params != nil && table.Params.RowParams != nil && table.Params.RowHeight != 0 {
+		height = table.Params.RowHeight
+	} else {
+		height = 5
+	}
 
 	for _, row := range table.Rows {
 		cli.pdf.SetX((cli.Width - width) / 2)
 		for _, cell := range row.Cells {
+			//Define default value
 			cli.setTextDefault(12)
 			percentSize := tools.Ternary(cell.ZtoO, cell.Percent, cell.Percent/100)
-			// alignTextInCell
-			if cell.Params != nil {
-				cli.setCellParams(cell.Params)
-				alignStr = alignToStr(cell.Params.Align)
-			} else if row.Params != nil {
-				cli.setRowParams(row.Params)
-				if row.Params.CellParams != nil {
-					alignStr = alignToStr(row.Params.Align)
-				}
-			} else if table.Params != nil {
+
+			//Define Table Preferences
+			if table.Params != nil {
 				cli.setTableParams(table.Params)
-				if table.Params.RowParams.CellParams != nil {
+				if table.Params.RowParams != nil && table.Params.RowParams.CellParams != nil {
 					alignStr = alignToStr(table.Params.Align)
 				}
 			}
+			//Define Row Preferences
+			if row.Params != nil {
+				cli.setRowParams(row.Params)
+				if row.Params.CellParams != nil {
+					alignStr = alignToStr(row.Params.CellParams.Align)
+				}
+			}
+			//Define Cell Preferences
+			if cell.Params != nil {
+				cli.setCellParams(cell.Params)
+				alignStr = alignToStr(cell.Params.Align)
+			}
+
 			x, y := cli.pdf.GetXY()
-			cli.pdf.MultiCell((width)*percentSize, height, cell.Str, "1", alignStr, true)
+			cli.pdf.MultiCell((width)*percentSize, height, cli.translator(cell.Str), "1", alignStr, true)
 			cli.pdf.SetXY(x+(width*percentSize), y)
 		}
 		cli.pdf.Ln(-1)

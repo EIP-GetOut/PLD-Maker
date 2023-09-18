@@ -1,10 +1,12 @@
 package main
 
 import (
+	"net/url"
 	"os"
 	"pld-maker/v1/internal/interface/db"
 	"pld-maker/v1/internal/interface/pdf"
 	"pld-maker/v1/internal/interface/pld"
+	"strconv"
 
 	"pld-maker/v1/internal/wrapper/airtablewrapper"
 	"pld-maker/v1/internal/wrapper/fpdfwrapper"
@@ -15,23 +17,43 @@ import (
 
 func main() {
 	//dbCli := db.Client(tools.Must(airtable.NewClient(credential)))
+	credential := tools.Must(os.ReadFile("./conf/credential.json"))
+	dbCli := db.Client(tools.Must(airtablewrapper.NewClient(credential)))
 	pdfCli := pdf.Client(tools.Must(fpdfwrapper.NewClient()))
 	pldCli := pld.Client(tools.Must(pldwrapper.NewClient(&pdfCli)))
 
-	credential := tools.Must(os.ReadFile("./conf/credential.json"))
-	dbCli := db.Client(tools.Must(airtablewrapper.NewClient(credential)))
+	// Database
+	// VERSION, SCHEMA, REPORT
+	versions := tools.Must(dbCli.ListVersions(url.Values{"filterByFormula": {""}, "sort[0][field]": {"Date"}, "sort[0][direction]": {"asc"}}))
+	schemas := tools.Must(dbCli.ListSchemas(nil))
+	reports := tools.Must(dbCli.ListReports(nil))
+	// CARD
+	currentSprints := tools.Must(dbCli.ListSprints(url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}}))
+	sprints := tools.Must(dbCli.ListSprints(nil))
+	sectors := tools.Must(dbCli.ListSectors(nil))
+	categories := tools.Must(dbCli.ListCategories(nil))
+	cards := tools.Must(dbCli.ListCards(nil))
 
-	dbCli.ListVersions(nil)
-	dbCli.GetVersion("reca7bODlpFDpjEJ9")
-	dbCli.ListVersions(nil)
-	dbCli.GetVersion("reca7bODlpFDpjEJ9")
+	//Pld  d
+	pldCli.NewFile("2025_PLD_GETOUT")
+	pldCli.Header("", "", "EPITECH INNOVATIVE PROJECT - PROJECT LOG DOCUMENT")
+	pldCli.Footer("", "", "", &pdf.FooterParams{PageNo: true, FirstPageNo: false})
 
-	pldCli.NewFile("Testtt")
-	pldCli.FirstPage("../conf/epitech.png", "Title", "Promo 2025")
-	pldCli.Description("Project Log Document", "PLD Getout du sprint numéro NumberNotDefined", "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", "VersionNotDefine")
-	pldCli.Versions([]db.Version{})
-	pldCli.Schemas([]db.Schema{})
-	pldCli.Report([]db.Report{})
+	//FirstPage
+	pldCli.FirstPage("../conf/epitech.png", "EPITECH INNOVATIVE PROJECT\n\nPROJECT LOG DOCUMENT\n\nSPRINT NUMERO "+tools.Ternary(len(currentSprints) == 1, strconv.Itoa(currentSprints[0].Number), "???"), "Promo 2025")
+	//Description
+	pldCli.Description("Project Log Document", "PLD Getout du sprint numéro "+tools.Ternary(len(currentSprints) == 1, strconv.Itoa(currentSprints[0].Number), "???"), "Groupe Getout", "getout_2025@labeip.epitech.eu", "2025", "24 avril 2023", versions[len(versions)-1].Version)
+	//Version
+	pldCli.Versions(versions)
+	//Summary
+	pldCli.Summary(versions, schemas, sprints, sectors, categories, cards)
+	pldCli.Schemas(schemas)
+	//DeliveryCards
+	pldCli.ListCards(sprints, sectors, categories, cards)
+	//UserStories
+	pldCli.Cards(sprints, sectors, categories, cards)
+	//Report
+	pldCli.Report(reports)
 	pldCli.CloseFile()
 
 	// pldCli := pld.Client(tools.Must(epipld.NewClient()))

@@ -17,7 +17,7 @@ func (cli *Client) NewFile(filename string) {
 	cli.FooterWidth = 190
 	cli.ImageWidth = 200
 
-	cli.TableWidth = 180
+	cli.TableWidth = 190
 	cli.TextWidth = 180
 
 	cli.translator = cli.pdf.UnicodeTranslatorFromDescriptor("")

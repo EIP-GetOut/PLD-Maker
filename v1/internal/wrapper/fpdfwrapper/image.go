@@ -17,7 +17,8 @@ func (cli *Client) setImageParams(x, y, w, h float64, params *pdf.ImageParams) (
 		}{
 			{f: func() { x = (cli.Width - w) / 2 }, b: params.X == 0},
 			//	X,Y set float64
-			{f: func() { x = params.X }, b: params.X != 0 || !params.XPercent},
+			{f: func() { x = params.X }, b: params.X != 0 && !params.XPercent},
+			{f: func() { y = params.Y }, b: params.Y != 0},
 			//	XPercent, YPercent bool
 			{f: func() { x = (cli.Width - w) * params.X }, b: params.X != 0 && params.XPercent},
 		} {
@@ -45,12 +46,11 @@ func (cli *Client) Image(image pdf.Image) {
 	opt.ImageType = extension
 	opt.AllowNegativePosition = true
 
-	cli.pdf.RegisterImageOptionsReader("logo", opt, fl)
+	cli.pdf.RegisterImageOptionsReader(image.Filepath, opt, fl)
 	fl.Close()
 	cli.pdf.SetX((cli.Width - image.Width) / 2)
 	x, y := cli.pdf.GetXY()
 	x, y = cli.setImageParams(x, y, image.Width, image.Height, image.Params)
-
-	cli.pdf.ImageOptions("logo", x, y, image.Width, image.Height, false, opt, 0, "")
+	cli.pdf.ImageOptions(image.Filepath, x, y, image.Width, image.Height, false, opt, 0, "")
 	cli.pdf.SetY(y + image.Height)
 }

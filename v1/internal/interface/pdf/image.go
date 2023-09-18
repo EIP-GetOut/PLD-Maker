@@ -2,6 +2,7 @@ package pdf
 
 type ImageParams struct {
 	X        float64
+	Y        float64
 	XPercent bool
 }
 

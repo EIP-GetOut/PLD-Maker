@@ -2,7 +2,6 @@ package airtablewrapper
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"pld-maker/v1/internal/tools"
@@ -67,8 +66,8 @@ func ListItems[T Records, G any](cli *Client, table string, params url.Values, a
 			break
 		}
 	}
-	fmt.Println(tools.Yellow("ListVersions:"), tmp)
-	fmt.Println(tools.Green("ListVersions:"), result)
+	//	fmt.Println(tools.Yellow("List"+table+":"), tmp)
+	//	fmt.Println(tools.Green("List"+table+":"), result)
 	return result, nil
 }
 
@@ -85,7 +84,7 @@ func GetItem[T any, G any](cli *Client, table string, id string, translater func
 	if err := json.Unmarshal(data, &tmp); err != nil {
 		return translater(tmp), err
 	}
-	fmt.Println(tools.Yellow("ListVersions:"), tmp)
-	fmt.Println(tools.Green("ListVersions:"), translater(tmp))
+	//	fmt.Println(tools.Yellow("Get"+table+":"), tmp)
+	//	fmt.Println(tools.Green("Get"+table+":"), translater(tmp))
 	return translater(tmp), nil
 }

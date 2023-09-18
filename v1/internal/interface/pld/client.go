@@ -2,12 +2,16 @@ package pld
 
 import (
 	"pld-maker/v1/internal/interface/db"
+	"pld-maker/v1/internal/interface/pdf"
 )
 
 type Client interface {
 	//File
 	NewFile(filename string)
 	CloseFile()
+	//HeaderFooter
+	Header(left, center, right string)
+	Footer(left, center, right string, footerParams *pdf.FooterParams)
 	//FirstPage
 	FirstPage(imageFilepath, title, lowTitle string)
 	//Description

@@ -5,11 +5,11 @@ type Client interface {
 	NewFile(filename string)
 	CloseFile()
 	NewPage()
+	NewLine()
 
 	//HeaderFooter
 	Header(left, center, right string)
 	Footer(left, center, right string, footerParams *FooterParams)
-
 	//Text
 	Title(text Text) //30px
 	SubTitle(text Text)

@@ -2,7 +2,6 @@ package pldwrapper
 
 import (
 	"errors"
-	"pld-maker/v1/internal/interface/db"
 	"pld-maker/v1/internal/interface/pdf"
 )
 
@@ -31,43 +30,4 @@ func (cli *Client) NewFile(str string) {
 
 func (cli *Client) CloseFile() {
 	(*cli.PdfClient).CloseFile()
-}
-
-// FirstPage
-func (cli *Client) FirstPage(imageFilepath, title, lowTitle string) {
-
-}
-
-// Description
-func (cli *Client) Description(title, object, author, e_mail, promo, last_update, version string) {
-
-}
-
-// Version
-func (cli *Client) Versions([]db.Version) {
-}
-
-// Summary
-func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
-
-}
-
-// Display Schema Images
-func (cli *Client) Schemas(schemas []db.Schema) {
-
-}
-
-// List Cards by Categories and by Sectors
-func (cli *Client) ListCards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
-
-}
-
-// Show Cards
-func (cli *Client) Cards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
-
-}
-
-// Show reports
-func (cli *Client) Report([]db.Report) {
-
 }

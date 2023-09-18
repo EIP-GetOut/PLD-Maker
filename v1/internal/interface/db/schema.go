@@ -5,4 +5,5 @@ type Schema struct {
 	Height int    `json:"height"`
 	Url    string `json:"url"`
 	Title  string `json:"Name"`
+	Type   string `json:"type"`
 }

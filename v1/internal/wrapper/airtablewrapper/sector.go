@@ -40,6 +40,7 @@ func SectorsAppender(tmp Sectors) []db.Sector {
 
 func SectorTranslater(tmp Sector) db.Sector {
 	return db.Sector{
+		Id:   tmp.Id,
 		Name: tmp.Fields.Name,
 	}
 }

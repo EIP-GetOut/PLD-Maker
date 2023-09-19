@@ -25,7 +25,7 @@ type CardFields struct {
 
 	Category []string `json:"Category"`
 	Sprint   []string `json:"Sprint"`
-	Secteur  []string `json:"Secteur"`
+	Sector   []string `json:"Sector"`
 }
 
 type Card struct {
@@ -64,6 +64,7 @@ func CardTranslater(tmp Card) db.Card {
 		assignees = append(assignees, db.Assignee{Name: v.Name, Email: v.Email})
 	}
 	return db.Card{
+		Id:               tmp.Id,
 		Title:            tmp.Fields.Title,
 		Status:           tmp.Fields.Status,
 		Progress:         tmp.Fields.Progress,
@@ -76,7 +77,7 @@ func CardTranslater(tmp Card) db.Card {
 		OrderedJH:        tmp.Fields.OrderedJH,
 		Category:         tmp.Fields.Category,
 		Sprint:           tmp.Fields.Sprint,
-		Secteur:          tmp.Fields.Secteur,
+		Sector:           tmp.Fields.Sector,
 	}
 }
 

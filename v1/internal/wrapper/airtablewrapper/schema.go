@@ -49,6 +49,7 @@ func SchemasAppender(tmp Schemas) []db.Schema {
 
 func SchemaTranslater(tmp Schema) db.Schema {
 	return db.Schema{
+		Id:     tmp.Id,
 		Width:  tmp.Fields.Files[0].Width,
 		Height: tmp.Fields.Files[0].Height,
 		Url:    tmp.Fields.Files[0].Url,

@@ -6,6 +6,7 @@ type Assignee struct {
 }
 
 type Card struct {
+	Id               string     `json:"id"`
 	Title            string     `json:"Name"`
 	Status           string     `json:"Status"`
 	Progress         float64    `json:"progress"`
@@ -19,5 +20,5 @@ type Card struct {
 
 	Category []string `json:"Category"`
 	Sprint   []string `json:"Sprint"`
-	Secteur  []string `json:"Secteur"`
+	Sector   []string `json:"Secteur"`
 }

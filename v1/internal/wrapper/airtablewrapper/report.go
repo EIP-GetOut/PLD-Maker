@@ -41,6 +41,7 @@ func ReportsAppender(tmp Reports) []db.Report {
 
 func ReportTranslater(tmp Report) db.Report {
 	return db.Report{
+		Id:    tmp.Id,
 		Name:  tmp.Fields.Name,
 		Notes: tmp.Fields.Notes,
 	}

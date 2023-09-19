@@ -18,6 +18,7 @@ func reportTableTemplate(name string, notes string) pdf.Table {
 							TextColor:  &pdf.Color{R: 0, G: 0, B: 0},
 							Size:       15,
 							Bold:       true,
+							Align:      pdf.Center,
 						},
 					},
 				},
@@ -35,6 +36,11 @@ func reportTableTemplate(name string, notes string) pdf.Table {
 				},
 			},
 		},
+		Params: &pdf.TableParams{
+			RowParams: &pdf.RowParams{
+				RowHeight: 8,
+			},
+		},
 	}
 }
 
@@ -44,22 +50,30 @@ func (cli *Client) Report(reports []db.Report) {
 		global          pdf.Table
 		problem         pdf.Table
 		commment        pdf.Table
-		individualTable pdf.Table = pdf.Table{Rows: []pdf.Row{
-			{
-				Cells: []pdf.Cell{
-					{
-						Str:     "Avancement individuel",
-						Percent: 100,
-						Params: &pdf.CellParams{
-							Background: &pdf.Color{R: 164, G: 194, B: 244},
-							TextColor:  &pdf.Color{R: 0, G: 0, B: 0},
-							Size:       15,
-							Bold:       true,
+		individualTable pdf.Table = pdf.Table{
+			Rows: []pdf.Row{
+				{
+					Cells: []pdf.Cell{
+						{
+							Str:     "Avancement individuel",
+							Percent: 100,
+							Params: &pdf.CellParams{
+								Background: &pdf.Color{R: 164, G: 194, B: 244},
+								TextColor:  &pdf.Color{R: 0, G: 0, B: 0},
+								Size:       15,
+								Bold:       true,
+								Align:      pdf.Center,
+							},
 						},
 					},
 				},
 			},
-		}}
+			Params: &pdf.TableParams{
+				RowParams: &pdf.RowParams{
+					RowHeight: 8,
+				},
+			},
+		}
 	)
 
 	//Sort

@@ -6,8 +6,10 @@ import (
 )
 
 type CategoryFields struct {
-	Name  string   `json:"Name"`
-	Cards []string `json:"Card"`
+	Name    string   `json:"Name"`
+	Cards   []string `json:"Card"`
+	Sprints []string `json:"Sprint"`
+	Sectors []string `json:"Sector"`
 }
 
 type Category struct {
@@ -41,8 +43,11 @@ func CategoriesAppender(tmp Categories) []db.Category {
 
 func CategoryTranslater(tmp Category) db.Category {
 	return db.Category{
-		Name:  tmp.Fields.Name,
-		Cards: tmp.Fields.Cards,
+		Id:      tmp.Id,
+		Name:    tmp.Fields.Name,
+		Cards:   tmp.Fields.Cards,
+		Sectors: tmp.Fields.Sectors,
+		Sprints: tmp.Fields.Sprints,
 	}
 }
 

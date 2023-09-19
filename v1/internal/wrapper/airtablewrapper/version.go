@@ -43,6 +43,7 @@ func VersionsAppender(tmp Versions) []db.Version {
 
 func VersionTranslater(tmp Version) db.Version {
 	return db.Version{
+		Id:       tmp.Id,
 		Date:     tmp.Fields.Date,
 		Version:  tmp.Fields.Version,
 		Author:   tmp.Fields.Author,

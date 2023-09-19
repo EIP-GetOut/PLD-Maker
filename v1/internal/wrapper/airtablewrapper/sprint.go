@@ -43,6 +43,7 @@ func SprintsAppender(tmp Sprints) []db.Sprint {
 
 func SprintTranslater(tmp Sprint) db.Sprint {
 	return db.Sprint{
+		Id:     tmp.Id,
 		Title:  tmp.Fields.Title,
 		Cards:  tmp.Fields.Cards,
 		Status: tmp.Fields.Status,

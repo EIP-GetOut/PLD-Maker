@@ -7,6 +7,8 @@ import (
 	"pld-maker/v1/internal/tools"
 )
 
+//func
+
 // GetCategories
 func getSectorCategories(sector db.Sector, categories []db.Category) []db.Category {
 	var result []db.Category
@@ -50,31 +52,225 @@ func getSectorAndCategoryCards(sector db.Sector, category db.Category, cards []d
 	return result
 }
 
-// List Cards by Categories and by Sectors
-func (cli *Client) ListCards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
+/*
+ * List Cards by Categories by Sectors
+ *
+ */
+func (cli *Client) ListCards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
 	(*cli.PdfClient).NewPage()
 	(*cli.PdfClient).Text(pdf.Text{Data: "2. Cartes des livrables:", Params: &pdf.TextParams{Bold: true}})
 	(*cli.PdfClient).NewLine()
 
 	for _, sector := range sectors {
-		fmt.Println(tools.Red(sector.Name + " - " + sector.Id))
+		fmt.Println(tools.Magenta(sector.Name + " - " + sector.Id))
 		(*cli.PdfClient).Heading2(pdf.Text{Data: sector.Name})
 		//category of sector
 		for _, category := range getSectorCategories(sector, categories) {
-			fmt.Println(tools.Yellow("\t" + category.Name))
+			fmt.Println(tools.Cyan("\t" + category.Name))
 			(*cli.PdfClient).Text(pdf.Text{Data: "    " + category.Name, Params: &pdf.TextParams{Bold: true}})
 			//card of category
 			for _, card := range getSectorAndCategoryCards(sector, category, cards) {
-				fmt.Println(tools.Green("\t\t" + card.Title))
-				(*cli.PdfClient).Text(pdf.Text{Data: "        " + card.Title})
+				var color pdf.Color
+
+				fmt.Println(tools.BgCyan(fmt.Sprint(card.Sprint, currentSprint.Id, card.Progress)))
+
+				if card.Progress == 0 {
+					fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+					color = cli.PercentColors[0]
+				} else if card.Progress < 1 {
+					if card.Sprint[0] != currentSprint.Id {
+						fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[0]
+					} else {
+						fmt.Println(tools.Yellow(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[1]
+					}
+				} else {
+					if card.Sprint[0] != currentSprint.Id {
+						fmt.Println(tools.Grey(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[3]
+					} else {
+						fmt.Println(tools.Green(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[2]
+					}
+				}
+				(*cli.PdfClient).Text(pdf.Text{Data: "        " + card.Title, Params: &pdf.TextParams{TextColor: &color}})
 			}
 		}
 	}
 }
 
 // Show Cards
-func (cli *Client) Cards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
+func (cli *Client) Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
 	(*cli.PdfClient).NewPage()
 	(*cli.PdfClient).Text(pdf.Text{Data: "3. User Stories:", Params: &pdf.TextParams{Bold: true}})
 	(*cli.PdfClient).NewLine()
+
+	for _, sector := range sectors {
+		fmt.Println(tools.Magenta(sector.Name + " - " + sector.Id))
+		(*cli.PdfClient).Heading2(pdf.Text{Data: sector.Name})
+		//category of sector
+		for _, category := range getSectorCategories(sector, categories) {
+			fmt.Println(tools.Cyan("\t" + category.Name))
+			(*cli.PdfClient).Text(pdf.Text{Data: "    " + category.Name, Params: &pdf.TextParams{Bold: true}})
+			//card of category
+			for _, card := range getSectorAndCategoryCards(sector, category, cards) {
+				var color pdf.Color
+
+				fmt.Println(tools.BgCyan(fmt.Sprint(card.Sprint, currentSprint.Id, card.Progress)))
+
+				if card.Progress == 0 {
+					fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+					color = cli.PercentColors[0]
+				} else if card.Progress < 1 {
+					if card.Sprint[0] != currentSprint.Id {
+						fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[0]
+					} else {
+						fmt.Println(tools.Yellow(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[1]
+					}
+				} else {
+					if card.Sprint[0] != currentSprint.Id {
+						fmt.Println(tools.Grey(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[3]
+					} else {
+						fmt.Println(tools.Green(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						color = cli.PercentColors[2]
+					}
+				}
+				(*cli.PdfClient).Table(pdf.Table{
+					Rows: []pdf.Row{
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     card.Title,
+									Percent: 60,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+								{
+									Str:     "Progress",
+									Percent: 20,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+								{
+									Str:     card.Title,
+									Percent: 20,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     "En tant que:",
+									Percent: 50,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+								{
+									Str:     "Je veux:",
+									Percent: 50,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     card.AsWho,
+									Percent: 50,
+								},
+								{
+									Str:     card.IWant,
+									Percent: 50,
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     "Description:",
+									Percent: 100,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     card.Description,
+									Percent: 100,
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     "Definition Of Done:",
+									Percent: 100,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     card.DefinitionOfDone,
+									Percent: 100,
+								},
+							},
+						},
+						{
+							Cells: []pdf.Cell{
+								{
+									Str:     "Charge Estimée (J/H):",
+									Percent: 30,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+								{
+									Str:     fmt.Sprint(card.Jh),
+									Percent: 20,
+								},
+								{
+									Str:     "Assignés (J/H):",
+									Percent: 20,
+									Params: &pdf.CellParams{
+										Background: &color,
+									},
+								},
+								{
+									Str:     fmt.Sprint(card.Assignees),
+									Percent: 30,
+								},
+							},
+						},
+					},
+					Params: &pdf.TableParams{
+						RowParams: &pdf.RowParams{
+							CellParams: &pdf.CellParams{
+								Background: &pdf.Color{R: 255, G: 255, B: 255},
+							},
+						},
+					},
+				})
+				(*cli.PdfClient).NewPage()
+			}
+		}
+	}
 }

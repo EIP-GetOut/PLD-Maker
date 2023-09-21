@@ -24,9 +24,9 @@ type Client interface {
 	Schemas(schemas []db.Schema)
 
 	//ListCards   []Sectors[[]Categories[Cards]]
-	ListCards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
+	ListCards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
 	//Display Cards   []Sectors[Cards]
-	Cards(sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
+	Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
 	//Report
 	Report(reports []db.Report)
 }

@@ -18,6 +18,11 @@ func Reverse(str string) string {
 func Black(str string) string {
 	return "\033[30m" + str + "\033[0m"
 }
+
+func Grey(str string) string {
+	return "\033[90m" + str + "\033[0m"
+}
+
 func Red(str string) string {
 	return "\033[31m" + str + "\033[0m"
 }

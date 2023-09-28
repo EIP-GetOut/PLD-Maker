@@ -58,6 +58,8 @@ func getSectorAndCategoryCards(sector db.Sector, category db.Category, cards []d
  *
  */
 func (cli *Client) ListCards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
+	var cardIdx int = 0
+
 	(*cli.PdfClient).NewPage()
 	(*cli.PdfClient).Text(pdf.Text{Data: "2. Cartes des livrables:", Params: &pdf.TextParams{Bold: true}})
 	(*cli.PdfClient).NewLine()
@@ -72,6 +74,7 @@ func (cli *Client) ListCards(currentSprint db.Sprint, sprints []db.Sprint, secto
 			//card of category
 			for _, card := range getSectorAndCategoryCards(sector, category, cards) {
 				var color pdf.Color
+				cardIdx++
 
 				fmt.Println(tools.BgCyan(fmt.Sprint(card.Sprint, currentSprint.Id, card.Progress)))
 
@@ -96,6 +99,9 @@ func (cli *Client) ListCards(currentSprint db.Sprint, sprints []db.Sprint, secto
 					}
 				}
 				(*cli.PdfClient).Text(pdf.Text{Data: "        " + card.Title, Params: &pdf.TextParams{TextColor: &color}})
+				if cardIdx%20 == 0 {
+					(*cli.PdfClient).NewPage()
+				}
 			}
 		}
 	}
@@ -127,35 +133,35 @@ func (cli *Client) Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors [
 	(*cli.PdfClient).NewLine()
 
 	for _, sector := range sectors {
-		fmt.Println(tools.Magenta(sector.Name + " - " + sector.Id))
+		//fmt.Println(tools.Magenta(sector.Name + " - " + sector.Id))
 		(*cli.PdfClient).Heading2(pdf.Text{Data: sector.Name})
 		//category of sector
 		for _, category := range getSectorCategories(sector, categories) {
-			fmt.Println(tools.Cyan("\t" + category.Name))
+			//fmt.Println(tools.Cyan("\t" + category.Name))
 			(*cli.PdfClient).Text(pdf.Text{Data: "    " + category.Name, Params: &pdf.TextParams{Bold: true}})
 			//card of category
 			for _, card := range getSectorAndCategoryCards(sector, category, cards) {
 				var color pdf.Color
 
-				fmt.Println(tools.BgCyan(fmt.Sprint(card.Sprint, currentSprint.Id, card.Progress)))
+				//fmt.Println(tools.BgCyan(fmt.Sprint(card.Sprint, currentSprint.Id, card.Progress)))
 
 				if card.Progress == 0 {
-					fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+					//fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
 					color = cli.PercentColors[0]
 				} else if card.Progress < 1 {
 					if card.Sprint[0] != currentSprint.Id {
-						fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						//fmt.Println(tools.Red(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
 						color = cli.PercentColors[0]
 					} else {
-						fmt.Println(tools.Yellow(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						//fmt.Println(tools.Yellow(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
 						color = cli.PercentColors[1]
 					}
 				} else {
 					if card.Sprint[0] != currentSprint.Id {
-						fmt.Println(tools.Grey(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						//fmt.Println(tools.Grey(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
 						color = cli.PercentColors[3]
 					} else {
-						fmt.Println(tools.Green(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
+						//fmt.Println(tools.Green(fmt.Sprint("\t\t"+card.Title+" - ", card.Progress*100)))
 						color = cli.PercentColors[2]
 					}
 				}

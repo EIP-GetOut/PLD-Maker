@@ -1,7 +1,6 @@
 package fpdfwrapper
 
 import (
-	"fmt"
 	"pld-maker/v1/internal/interface/pdf"
 	"pld-maker/v1/internal/tools"
 	"strings"
@@ -154,12 +153,10 @@ func (cli *Client) Table(table pdf.Table) {
 				maxY = strings.Count(cell.Str, "\n")
 			}
 		}
-		fmt.Println("max:", maxX, maxY)
 
 		for i := range row.Cells {
 			var cell *pdf.Cell = &row.Cells[i]
 			y := strings.Count(cell.Str, "\n")
-			fmt.Println("\t", maxY, y)
 			cell.Str += strings.Repeat("\n ", maxY-y)
 		}
 

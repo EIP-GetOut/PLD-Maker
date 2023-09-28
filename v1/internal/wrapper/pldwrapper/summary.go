@@ -15,20 +15,31 @@ func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints [
 
 	//Calcul index
 	var (
-		beginLen   int = 2 //firstPage+Description
-		versionLen int = 1 + (len(versions)+1)/30
-		summaryLen int = 1
-		schemaLen  int = len(schemas)
-		//		deliveryCard int = 1
-		//		userStoryNb int = schemaNo + len(schemas)
-		//		userStoriesNb []int = []int{}
-		//		cardNb        int   = userStoryNb + cards
-		//		cardsNb       []int = []int{}
+		//Info
+		sizeFirstPage    int = 1
+		sizeDescription  int = 1
+		sizeVersion      int = 1 + (len(versions)+1)/30
+		sizeSummary      int = 1
+		sizeSchema       int = len(schemas)
+		sizeDeliveryCard int = (len(cards)) / 20
+		sizeUserStories  int = 1 + len(cards)
+		//PagesNumber
+		posSchema         int = sizeFirstPage + sizeDescription + sizeVersion + sizeSummary + 1
+		posDeliveryCard   int = posSchema + sizeSchema
+		posUserStories    int = posDeliveryCard + sizeDeliveryCard
+		posAdvanceRepport int = posUserStories + sizeUserStories
 	)
-
-	fmt.Println("begin", beginLen)
-	fmt.Println("version", beginLen+versionLen)
-	fmt.Println("schema", beginLen+versionLen+schemaLen)
+	//Size
+	fmt.Println("sizeFirstPage", sizeFirstPage)
+	fmt.Println("sizeDescription", sizeDescription)
+	fmt.Println("sizeVersion", sizeVersion)
+	fmt.Println("sizeSummary", sizeSummary)
+	fmt.Println("sizeSchema", sizeSchema)
+	//Pos
+	fmt.Println("posSchema", posSchema)
+	fmt.Println("posDeliveryCard", posDeliveryCard)
+	fmt.Println("posUserStories", posUserStories)
+	fmt.Println("posAdvanceRepport", posAdvanceRepport)
 	//Display table
 	(*cli.PdfClient).Table(pdf.Table{
 		Rows: []pdf.Row{
@@ -39,7 +50,7 @@ func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints [
 						Percent: 90,
 					},
 					{
-						Str:     strconv.Itoa(1 + beginLen + versionLen + summaryLen),
+						Str:     strconv.Itoa(posSchema),
 						Percent: 10,
 					},
 				},
@@ -51,7 +62,7 @@ func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints [
 						Percent: 90,
 					},
 					{
-						Str:     strconv.Itoa(1 + beginLen + versionLen + summaryLen + schemaLen),
+						Str:     strconv.Itoa(posDeliveryCard),
 						Percent: 10,
 					},
 				},
@@ -63,7 +74,7 @@ func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints [
 						Percent: 90,
 					},
 					{
-						Str:     strconv.Itoa((len(versions) + 1) / 30),
+						Str:     strconv.Itoa(posUserStories),
 						Percent: 10,
 					},
 				},
@@ -75,7 +86,7 @@ func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints [
 						Percent: 90,
 					},
 					{
-						Str:     strconv.Itoa((len(versions) + 1) / 30),
+						Str:     strconv.Itoa(posAdvanceRepport),
 						Percent: 10,
 					},
 				},

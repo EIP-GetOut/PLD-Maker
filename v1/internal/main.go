@@ -28,11 +28,11 @@ func main() {
 	schemas := tools.Must(dbCli.ListSchemas(nil))
 	reports := tools.Must(dbCli.ListReports(nil))
 	// CARD
-	currentSprints := tools.Must(dbCli.ListSprints(url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}}))[0]
-	sprints := tools.Must(dbCli.ListSprints(nil))
+	currentSprints := tools.Must(dbCli.ListSprints(url.Values{"filterByFormula": {"FIND(\"In progress\", {Status})"}, "sort[0][field]": {"Number"}, "sort[0][direction]": {"desc"}}))[0]
+	sprints := tools.Must(dbCli.ListSprints(url.Values{"filterByFormula": {"NOT({Status} = \"Todo\")"}}))
 	sectors := tools.Must(dbCli.ListSectors(nil))
-	categories := tools.Must(dbCli.ListCategories(nil))
-	cards := tools.Must(dbCli.ListCards(nil))
+	categories := tools.Must(dbCli.ListCategories(url.Values{"filterByFormula": {"NOT(SprintStatus = 'Todo')"}}))
+	cards := tools.Must(dbCli.ListCards(url.Values{"filterByFormula": {"NOT(SprintStatus = 'Todo')"}}))
 
 	//Pld  d
 	pldCli.NewFile("2025_PLD_GETOUT")

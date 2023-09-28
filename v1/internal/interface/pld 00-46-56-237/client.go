@@ -1,0 +1,5 @@
+package pld
+
+type Client {
+
+}

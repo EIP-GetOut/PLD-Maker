@@ -5,6 +5,7 @@ import (
 	"pld-maker/v1/internal/interface/db"
 	"pld-maker/v1/internal/interface/pdf"
 	"pld-maker/v1/internal/tools"
+	"strings"
 )
 
 //func
@@ -101,6 +102,25 @@ func (cli *Client) ListCards(currentSprint db.Sprint, sprints []db.Sprint, secto
 }
 
 // Show Cards
+
+// format assignee: concate name or email prefix of full email
+func formatAssignee(assignees []db.Assignee) string {
+	var result string
+	for _, assignee := range assignees {
+		if assignee.Name != "" {
+			result += assignee.Name + ",\n"
+		} else if idx := strings.Index(assignee.Email, "@"); idx != -1 {
+			result += assignee.Email[0:idx] + ",\n"
+		} else {
+			result += assignee.Email + ",\n"
+		}
+	}
+	if len(result) >= 2 {
+		result = result[:len(result)-2]
+	}
+	return result
+}
+
 func (cli *Client) Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
 	(*cli.PdfClient).NewPage()
 	(*cli.PdfClient).Text(pdf.Text{Data: "3. User Stories:", Params: &pdf.TextParams{Bold: true}})
@@ -158,7 +178,7 @@ func (cli *Client) Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors [
 									},
 								},
 								{
-									Str:     card.Title,
+									Str:     fmt.Sprint(card.Progress*100) + "%",
 									Percent: 20,
 									Params: &pdf.CellParams{
 										Background: &color,
@@ -255,7 +275,7 @@ func (cli *Client) Cards(currentSprint db.Sprint, sprints []db.Sprint, sectors [
 									},
 								},
 								{
-									Str:     fmt.Sprint(card.Assignees),
+									Str:     formatAssignee(card.Assignees),
 									Percent: 30,
 								},
 							},

@@ -1,10 +1,13 @@
 package fpdfwrapper
 
 import (
-	"pld-maker/internal/tools"
+	"fmt"
 	"pld-maker/v1/internal/interface/pdf"
+	"pld-maker/v1/internal/tools"
+	"strings"
 )
 
+// Params
 var bToI = map[bool]int{
 	false: 0,
 	true:  1,
@@ -78,6 +81,45 @@ func (cli *Client) cellAlign(tableParams *pdf.TableParams, rowParams *pdf.RowPar
 	}
 }
 
+// other
+func cutStr(str string, max int) string {
+	var result string = ""
+	var lenght int = len(str)
+	// j define the further position, k is used to find previous space when no '\n' is found in max range.
+	var i, j, k int
+	var skip bool
+
+	// i define start of substring
+	for i = 0; i < lenght; i++ {
+		skip = false
+		for j = i; skip == false && j < lenght && j < i+max; j++ {
+			if str[j] == '\n' {
+				result += str[i : j+1]
+				i = j
+				skip = true
+			}
+		}
+		for k = j; skip == false && k < lenght && k > 0 && k > i; k-- {
+			if str[k] == ' ' {
+				result += str[i:k] + "\n"
+				i = k
+				skip = true
+			}
+		}
+		if skip == false {
+			if j == lenght {
+				result += str[i:lenght]
+				break
+			} else {
+				result += str[i:j+1] + "\n"
+				i = j
+			}
+		}
+	}
+	return result
+}
+
+// Cli
 func (cli *Client) Table(table pdf.Table) {
 	var (
 		alignStr string
@@ -97,7 +139,32 @@ func (cli *Client) Table(table pdf.Table) {
 
 	for _, row := range table.Rows {
 		cli.pdf.SetX((cli.Width - width) / 2)
-		for _, cell := range row.Cells {
+
+		//Edit Cell of Each Rows
+		var (
+			maxX int
+			maxY int
+		)
+		for i := range row.Cells {
+			var cell *pdf.Cell = &row.Cells[i]
+			//180 == 80
+			maxX = int((width / 2) * tools.Ternary(cell.ZtoO, cell.Percent, cell.Percent/100))
+			cell.Str = cutStr(cell.Str, maxX)
+			if maxY < strings.Count(cell.Str, "\n") {
+				maxY = strings.Count(cell.Str, "\n")
+			}
+		}
+		fmt.Println("max:", maxX, maxY)
+
+		for i := range row.Cells {
+			var cell *pdf.Cell = &row.Cells[i]
+			y := strings.Count(cell.Str, "\n")
+			fmt.Println("\t", maxY, y)
+			cell.Str += strings.Repeat("\n ", maxY-y)
+		}
+
+		for i, cell := range row.Cells {
+
 			//Define default value
 			cli.setTextDefault(12)
 			percentSize := tools.Ternary(cell.ZtoO, cell.Percent, cell.Percent/100)
@@ -124,8 +191,9 @@ func (cli *Client) Table(table pdf.Table) {
 
 			x, y := cli.pdf.GetXY()
 			cli.pdf.MultiCell((width)*percentSize, height, cli.translator(cell.Str), "1", alignStr, true)
-			cli.pdf.SetXY(x+(width*percentSize), y)
+			if i < len(row.Cells)-1 {
+				cli.pdf.SetXY(x+(width*percentSize), y)
+			}
 		}
-		cli.pdf.Ln(-1)
 	}
 }

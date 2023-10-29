@@ -46,7 +46,7 @@ func main() {
 	//Version
 	pldCli.Versions(versions)
 	//Summary
-	pldCli.Summary(versions, schemas, sprints, sectors, categories, cards)
+	pldCli.TableOfContent(versions, schemas, sprints, sectors, categories, cards)
 	pldCli.Schemas(schemas)
 	//DeliveryCards
 	pldCli.ListCards(currentSprints, sprints, sectors, categories, cards)

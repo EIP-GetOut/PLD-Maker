@@ -19,7 +19,7 @@ type Client interface {
 	//Version
 	Versions(versions []db.Version)
 	//Summary
-	Summary(versions []db.Version, schemas []db.Schema, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
+	TableOfContent(versions []db.Version, schemas []db.Schema, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card)
 	//Shema
 	Schemas(schemas []db.Schema)
 

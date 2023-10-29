@@ -8,7 +8,7 @@ import (
 )
 
 // Summary
-func (cli *Client) Summary(versions []db.Version, schemas []db.Schema, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
+func (cli *Client) TableOfContent(versions []db.Version, schemas []db.Schema, sprints []db.Sprint, sectors []db.Sector, categories []db.Category, cards []db.Card) {
 	(*cli.PdfClient).NewPage()
 	(*cli.PdfClient).Text(pdf.Text{Data: "Summary:", Params: &pdf.TextParams{Bold: true}})
 	(*cli.PdfClient).NewLine()
